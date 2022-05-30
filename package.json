@@ -1,0 +1,19 @@
+{
+  "name": "skoolworkshopapi",
+  "version": "1.0.0",
+  "description": "API voor Skool Workshop app",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renslakens/SkoolWorkshopAPI.git"
+  },
+  "author": "Rens Lakens",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/renslakens/SkoolWorkshopAPI/issues"
+  },
+  "homepage": "https://github.com/renslakens/SkoolWorkshopAPI#readme"
+}
