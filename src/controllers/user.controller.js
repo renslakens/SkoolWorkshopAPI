@@ -7,12 +7,12 @@ const jwtSecretKey = require('../config/config').jwtSecretKey
 let controller = {
     validateUser: (req, res, next) => {
         let user = req.body;
-        let { firstName, lastName, emailAddress, password } = user;
+        let { naam, achternaam, emailadres, wachtwoord } = user;
         try {
-            assert(typeof firstName === 'string', 'The firstname must be a string');
-            assert(typeof lastName === 'string', 'The lastName must be a string');
-            assert(typeof emailAddress === 'string', 'The emailAddress must be a string');
-            assert(typeof password === 'string', 'The password must a string');
+            assert(typeof naam === 'string', 'The naam must be a string');
+            assert(typeof achternaam === 'string', 'The achternaam must be a string');
+            assert(typeof emailadres === 'string', 'The emailadres must be a string');
+            assert(typeof wachtwoord === 'string', 'The wachtwoord must a string');
             // assert(typeof nationality === 'string', 'The nationality must be a string');
             // assert(typeof sex === 'string', 'The sex must be a string');
             // assert(typeof birhtDate === 'string', 'The birthDate must be a string');
@@ -23,9 +23,9 @@ let controller = {
             // assert(typeof city === 'string', 'The city must be a string');
             // assert(typeof country === 'string', 'The country must be a string');
 
-            assert(emailAdress.match(/^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/), 'emailAdress is invalid');
+            assert(emailadres.match(/^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/), 'emailadres is invalid');
             //8 karakters, 1 letter, 1 nummer en 1 speciaal teken
-            assert(password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/), 'password is invalid');
+            assert(wachtwoord.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/), 'wachtwoord is invalid');
 
             // if (phoneNumber != undefined) {
             //     assert(typeof phoneNumber === 'string', 'The phoneNumber must be a string');
@@ -64,7 +64,7 @@ let controller = {
     },
     addUser: (req, res, next) => {
         const user = req.body;
-        pool.query('INSERT INTO user SET ?', user, (dbError, result) => {
+        pool.query('INSERT INTO docent SET ?', user, (dbError, result) => {
             if (dbError) {
                 logger.debug(dbError.message);
                 const error = {
