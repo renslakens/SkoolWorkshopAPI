@@ -3,6 +3,8 @@ const pool = require('../../dbconnection');
 const logger = require('../config/config').logger;
 const jwt = require('jsonwebtoken');
 const jwtSecretKey = require('../config/config').jwtSecretKey
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 let controller = {
     validateUser: (req, res, next) => {
@@ -64,6 +66,7 @@ let controller = {
     },
     addUser: (req, res, next) => {
         const user = req.body;
+        user.wachtwoord = await bcrypt.hash(user.wachtwoord, saltRounds);
         pool.query('INSERT INTO docent SET ?', user, (dbError, result) => {
             if (dbError) {
                 logger.debug(dbError.message);
@@ -75,7 +78,6 @@ let controller = {
                 next(error);
             } else {
                 logger.debug('InsertId is: ', result.insertId);
-                //user.userId = result.insertId;
                 res.status(201).json({
                     status: 201,
                     message: 'User is toegevoegd in database',
