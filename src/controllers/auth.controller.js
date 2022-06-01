@@ -10,11 +10,11 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/;
 let controller = {
   login: (req, res, next) => {
     //Assert for validation
-    const { emailAdress } = req.body;
-    logger.debug(emailAdress, " ", req.body.password);
+    const { emailadres } = req.body;
+    logger.debug(emailadres, " ", req.body.wachtwoord);
 
     const queryString =
-      "SELECT id, firstName, lastName, emailAdress, password FROM user WHERE emailAdress = ?";
+      "SELECT docentID, naam, achternaam, emailadres, wachtwoord FROM Docent WHERE emailadres = ?";
 
     dbconnection.getConnection(function (err, connection) {
       if (err) {
@@ -28,7 +28,7 @@ let controller = {
       // Use the connection
       connection.query(
         queryString,
-        [emailAdress],
+        [emailadres],
         function (error, results, fields) {
           // When done with the connection, release it.
           connection.release();
@@ -45,7 +45,7 @@ let controller = {
           if (results && results.length === 1) {
             // User found with this emailAddress
             // Check if password's correct
-            if (results[0].password === req.body.password) {
+            if (results[0].wachtwoord === req.body.wachtwoord) {
               //email and password are correct
               logger.info(
                 "passwords matched, sending userinfo en valid token."
@@ -53,7 +53,7 @@ let controller = {
 
               const { password, ...userinfo } = results[0];
               const payload = {
-                userid: userinfo.id,
+                docentID: userinfo.docentID,
               };
 
               logger.debug(payload);
@@ -76,17 +76,74 @@ let controller = {
               logger.info("Password invalid");
               res.status(401).json({
                 status: 401,
-                message: "password invalid",
+                message: "Wachtwoord ongeldig.",
                 datetime: new Date().toISOString,
               });
             }
           } else {
-            logger.info("User not found");
-            res.status(404).json({
-              status: 404,
-              message: `User with email ${emailAdress} not found.`,
-              datetime: new Date().toISOString,
-            });
+            const queryString =
+              "SELECT medewerkerID, naam, achternaam, emailadres, wachtwoord FROM Medewerker WHERE emailadres = ?";
+            connection.query(
+              queryString,
+              [emailadres],
+              function (error, results, fields) {
+                connection.release();
+
+                if (error) {
+                  logger.error("Error: ", err.toString());
+                  res.status(500).json({
+                    error: err.toString(),
+                    datetime: new Date().toISOString(),
+                  });
+                }
+                if (results && results.length === 1) {
+                  // User found with this emailAddress
+                  // Check if password's correct
+                  if (results[0].wachtwoord === req.body.wachtwoord) {
+                    //email and password are correct
+                    logger.info(
+                      "passwords matched, sending userinfo en valid token."
+                    );
+
+                    const { password, ...userinfo } = results[0];
+                    const payload = {
+                      docentID: userinfo.docentID,
+                    };
+
+                    logger.debug(payload);
+
+                    jwt.sign(
+                      payload,
+                      jwtSecretKey,
+                      { expiresIn: "25d" },
+                      function (err, token) {
+                        if (token) {
+                          logger.info("User logged in, sending: ", userinfo);
+                          res.status(200).json({
+                            status: 200,
+                            result: { ...userinfo, token },
+                          });
+                        }
+                      }
+                    );
+                  } else {
+                    logger.info("Password invalid");
+                    res.status(401).json({
+                      status: 401,
+                      message: "Wachtwoord ongeldig.",
+                      datetime: new Date().toISOString,
+                    });
+                  }
+                } else {
+                  logger.info("User not found");
+                  res.status(404).json({
+                    status: 404,
+                    message: `Gebruiker met emailadres ${emailadres} niet gevonden.`,
+                    datetime: new Date().toISOString,
+                  });
+                }
+              }
+            );
           }
         }
       );
@@ -95,16 +152,16 @@ let controller = {
   validateLogin: (req, res, next) => {
     //Make sure you have the expected input
     logger.debug("validate login called");
-    let emailIsValid = emailRegex.test(req.body.emailAdress);
-    let passwordIsValid = passwordRegex.test(req.body.password);
+    let emailIsValid = emailRegex.test(req.body.emailadres);
+    let passwordIsValid = passwordRegex.test(req.body.wachtwoord);
 
     try {
       assert(
-        typeof req.body.emailAdress === "string",
+        typeof req.body.emailadres === "string",
         "email must be a string."
       );
       assert(
-        typeof req.body.password === "string",
+        typeof req.body.wachtwoord === "string",
         "password must be a string."
       );
       logger.debug("Both email and password are strings");
@@ -152,8 +209,8 @@ let controller = {
           logger.debug("token is valid", payload);
           //User has acces. Add userId from payload to
           //request, for every next endpoint
-          logger.debug(payload.userid);
-          req.userId = payload.userid;
+          logger.debug(payload.docentID);
+          req.docentID = payload.docentID;
           next();
         }
       });
