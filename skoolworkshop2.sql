@@ -29,6 +29,7 @@ CREATE TABLE Medewerker (
 	achternaam varchar(25) NOT NULL,
 	emailadres varchar(25) NOT NULL UNIQUE,
 	wachtwoord varchar(50) NOT NULL,
+	soortMedewerker varchar(10) NOT NULL,
 	PRIMARY KEY (medewerkerID)
 );
 
@@ -36,7 +37,7 @@ CREATE TABLE Klant (
 	klantID int NOT NULL AUTO_INCREMENT,
 	naam varchar(25) NOT NULL,
 	postcode varchar(8) NOT NULL,
-	telefoonnummer varchar(10) NOT NULL UNIQUE,
+	telefoonnummer varchar(10) NOT NULL,
 	straat varchar(25) NOT NULL,
 	huisnummer int NOT NULL,
 	plaats varchar(25) NOT NULL,
@@ -69,24 +70,24 @@ CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
 	isBevestigd int,
 	aantalDocenten int,
-	locatieNaam varchar(50),
-	workshopNaam varchar(50),
+	locatieID int,
+	workshopID int,
 	PRIMARY KEY (opdrachtID),
-	FOREIGN KEY (locatieNaam) REFERENCES Locatie(naam),
-	FOREIGN KEY (workshopNaam) REFERENCES Workshop(naam)
+	FOREIGN KEY (locatieID) REFERENCES Locatie(locatieID),
+	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID)
 );
 
 CREATE TABLE Doelgroep (
-	docentEmail varchar(25),
-	workshopNaam varchar(50),
-	FOREIGN KEY (docentEmail) REFERENCES Docent(emailadres),
-	FOREIGN KEY (workshopNaam) REFERENCES Workshop(naam)
+	docentID int,
+	workshopID int,
+	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
+	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID)
 );
 
 CREATE TABLE DocentInOpdracht (
-	docentEmail varchar(25),
+	docentID int,
 	opdrachtID int,
-	FOREIGN KEY (docentEmail) REFERENCES Docent(emailadres),
+	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
-    CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentEmail,OpdrachtID)
+    CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
 );

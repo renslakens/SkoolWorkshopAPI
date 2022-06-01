@@ -75,7 +75,7 @@ let controller = {
                 next(error);
             } else {
                 logger.debug('InsertId is: ', result.insertId);
-                user.userId = result.insertId;
+                //user.userId = result.insertId;
                 res.status(201).json({
                     status: 201,
                     message: 'User is toegevoegd in database',
