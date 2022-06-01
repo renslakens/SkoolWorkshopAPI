@@ -19,5 +19,6 @@ router.post('/', userController.validateUser, userController.addUser);
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
+router.delete('/:id', userController.validateId, userController.deleteUser);
 
 module.exports = router;
