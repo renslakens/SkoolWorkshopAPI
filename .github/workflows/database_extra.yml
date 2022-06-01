@@ -44,11 +44,25 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: DatabaseExtra # naam van mijn environment op GitHub
+    services:
+      mysql:
+        image: mysql:5.7
+        ports:
+          - 3306
     steps:
+      - uses: actions/checkout@v2
       - name: Verify MySQL connection from host
         run: |
+          sudo /etc/init.d/mysql start
           sudo apt-get install -y mysql-client
           mysql --host ${{secrets.DB_HOST}} --port ${{secrets.DB_PORT}} -u${{secrets.DB_USER}} -p${{secrets.DB_PASSWORD}} ${{secrets.DB_DATABASE}}
+      - name: Import the database
+        run: |
+          mysql -u${{secrets.DB_USER}} -p${{secrets.DB_PASSWORD}} ${{secrets.DB_DATABASE}} --host ${{secrets.DB_HOST}} --port ${{secrets.DB_PORT}} < skoolworkshop2.sql
+          mysql -u${{secrets.DB_USER}} -p${{secrets.DB_PASSWORD}} ${{secrets.DB_DATABASE}} --host ${{secrets.DB_HOST}} --port ${{secrets.DB_PORT}} -e "SHOW TABLES;"
+      - name: npm install
+        run: |
+          npm install
 
 
 
