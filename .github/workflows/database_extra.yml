@@ -45,8 +45,11 @@ jobs:
     environment:
       name: DatabaseExtra # naam van mijn environment op GitHub
     steps:
+      - uses: actions/checkout@v2
+
       - name: Verify MySQL connection from host
         run: |
+          sudo /etc/init.d/mysql start
           sudo apt-get install -y mysql-client
           mysql --host ${{secrets.DB_HOST}} --port ${{secrets.DB_PORT}} -u${{secrets.DB_USER}} -p${{secrets.DB_PASSWORD}} ${{secrets.DB_DATABASE}}
 
