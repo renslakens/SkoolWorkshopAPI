@@ -1,4 +1,4 @@
-USE skoolworkshop2;
+USE skool2extra;
 
 CREATE TABLE Docent (
 	docentID int NOT NULL AUTO_INCREMENT,
