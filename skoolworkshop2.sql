@@ -1,4 +1,4 @@
-USE skoolworkshop2;
+USE skool2extra;
 
 DROP TABLE IF EXISTS Docent;
 DROP TABLE IF EXISTS Medewerker;
