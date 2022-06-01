@@ -66,38 +66,37 @@ let controller = {
     },
     addUser: (req, res, next) => {
         const user = req.body;
-        password = user.wachtwoord;
-        bcrypt.genSalt(saltRounds, function(err, salt) {
-            if (err) {
-                throw err
-            } else {
-                bcrypt.hash(password, salt, function(err, hash) {
-                    if (err) {
-                        throw err
-                    } else {
-                        logger.debug(hash);
-                        user.wachtwoord = hash;
-                    }
-                })
-            }
-        })
-        pool.query('INSERT INTO docent SET ?', user, (dbError, result) => {
-            if (dbError) {
-                logger.debug(dbError.message);
-                const error = {
-                    status: 409,
-                    message: 'User has not been added',
-                    result: 'User is niet toegevoegd in database',
-                };
-                next(error);
-            } else {
-                logger.debug('InsertId is: ', result.insertId);
-                res.status(201).json({
-                    status: 201,
-                    message: 'User is toegevoegd in database',
-                    result: { id: result.insertId, ...user },
-                });
-            }
+        naam = req.body.naam
+        achternaam = req.body.achternaam
+        emailadres = req.body.emailadres
+        wachtwoord = req.body.wachtwoord
+
+        bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
+            var sql = "INSERT INTO docent (naam, achternaam, emailadres, wachtwoord) VALUES ?";
+            var values = [
+                [naam, achternaam, emailadres, hash]
+            ];
+
+            if (err) throw err;
+
+            pool.query(sql, [values], (dbError, result) => {
+                if (dbError) {
+                    logger.debug(dbError.message);
+                    const error = {
+                        status: 409,
+                        message: 'User has not been added',
+                        result: 'User is niet toegevoegd in database',
+                    };
+                    next(error);
+                } else {
+                    logger.debug('InsertId is: ', result.insertId);
+                    res.status(201).json({
+                        status: 201,
+                        message: 'User is toegevoegd in database',
+                        result: { id: result.insertId, ...user },
+                    });
+                }
+            });
         });
     },
     deleteUser: (req, res, next) => {
@@ -107,14 +106,14 @@ let controller = {
         dbconnection.getConnection(function(err, connection) {
             if (err) throw err;
 
-            connection.query('DELETE FROM docent WHERE id = ?;', [userId], function (error, results, fields) {
+            connection.query('DELETE FROM docent WHERE id = ?;', [userId], function(error, results, fields) {
                 connection.release();
                 if (error) throw error;
 
-                if(results.affectedRows > 0){
+                if (results.affectedRows > 0) {
                     res.status(200).json({
-                    status: 200,
-                    message: `User with ID ${userId} succesfully deleted`,
+                        status: 200,
+                        message: `User with ID ${userId} succesfully deleted`,
                     });
                 } else {
                     res.status(400).json({
