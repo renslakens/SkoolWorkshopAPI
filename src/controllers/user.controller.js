@@ -84,6 +84,31 @@ let controller = {
             }
         });
     },
+    deleteUser: (req, res, next) => {
+        const userId = req.params.userId;
+        let user;
+        logger.debug(`User with ID ${userId} requested to be deleted`);
+        dbconnection.getConnection(function(err, connection) {
+            if (err) throw err;
+
+            connection.query('DELETE FROM docent WHERE id = ?;', [userId], function (error, results, fields) {
+                connection.release();
+                if (error) throw error;
+
+                if(results.affectedRows > 0){
+                    res.status(200).json({
+                    status: 200,
+                    message: `User with ID ${userId} succesfully deleted`,
+                    });
+                } else {
+                    res.status(400).json({
+                        status: 400,
+                        message: `User does not exist`,
+                    });
+                }
+            });
+        });
+    },
 };
 
 module.exports = controller;
