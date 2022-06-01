@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const userController = require('../controllers/user.controller');
+const userController = require("../controllers/user.controller");
 
 //Add user
-router.post('/', userController.validateUser, userController.addUser);
+router.post("/", userController.validateUser, userController.addUser);
 
 // //Get all users
 // router.get('/', authController.validateToken, userController.getAllUsers);
@@ -19,6 +19,6 @@ router.post('/', userController.validateUser, userController.addUser);
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
-router.delete('/:id', userController.validateId, userController.deleteUser);
+router.delete("/:id", userController.validateId, userController.deleteUser);
 
 module.exports = router;
