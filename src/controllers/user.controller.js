@@ -66,7 +66,21 @@ let controller = {
     },
     addUser: (req, res, next) => {
         const user = req.body;
-        user.wachtwoord = await bcrypt.hash(user.wachtwoord, saltRounds);
+        password = user.wachtwoord;
+        bcrypt.genSalt(saltRounds, function(err, salt) {
+            if (err) {
+                throw err
+            } else {
+                bcrypt.hash(password, salt, function(err, hash) {
+                    if (err) {
+                        throw err
+                    } else {
+                        logger.debug(hash);
+                        user.wachtwoord = hash;
+                    }
+                })
+            }
+        })
         pool.query('INSERT INTO docent SET ?', user, (dbError, result) => {
             if (dbError) {
                 logger.debug(dbError.message);
