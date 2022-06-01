@@ -107,7 +107,7 @@ let controller = {
 
                     const { password, ...userinfo } = results[0];
                     const payload = {
-                      docentID: userinfo.docentID,
+                      medewerkerID: userinfo.medewerkerID,
                     };
 
                     logger.debug(payload);
@@ -205,12 +205,20 @@ let controller = {
             datetime: new Date().toISOString,
           });
         }
-        if (payload) {
+        if (payload.docentID) {
           logger.debug("token is valid", payload);
           //User has acces. Add userId from payload to
           //request, for every next endpoint
           logger.debug(payload.docentID);
           req.docentID = payload.docentID;
+          next();
+        }
+        if (payload.medewerkerID) {
+          logger.debug("token is valid", payload);
+          //User has acces. Add userId from payload to
+          //request, for every next endpoint
+          logger.debug(payload.medewerkerID);
+          req.medewerkerID = payload.medewerkerID;
           next();
         }
       });
