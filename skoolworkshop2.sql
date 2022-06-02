@@ -1,13 +1,13 @@
 USE skool2extra;
 
+DROP TABLE IF EXISTS DocentInOpdracht;
+DROP TABLE IF EXISTS Doelgroep;
+DROP TABLE IF EXISTS Opdracht;
 DROP TABLE IF EXISTS Docent;
 DROP TABLE IF EXISTS Medewerker;
 DROP TABLE IF EXISTS Klant;
 DROP TABLE IF EXISTS Locatie;
 DROP TABLE IF EXISTS Workshop;
-DROP TABLE IF EXISTS Opdracht;
-DROP TABLE IF EXISTS Doelgroep;
-DROP TABLE IF EXISTS DocentInOpdracht;
 
 CREATE TABLE Docent (
 	docentID int NOT NULL AUTO_INCREMENT,
@@ -17,8 +17,8 @@ CREATE TABLE Docent (
 	geboortedatum date NOT NULL,
 	geboorteplaats varchar(25) NOT NULL,
 	maxRijafstand int,
-	heeftRijbewijs int,
-	heeftAuto int,
+	heeftRijbewijs tinyint,
+	heeftAuto tinyint,
 	straat varchar(25) NOT NULL,
 	huisnummer int NOT NULL,
 	geslacht varchar(5) NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE Docent (
 	postcode varchar(8) NOT NULL,
 	land varchar(25) NOT NULL,
 	wachtwoord varchar(50) NOT NULL,
-	isAccepted int,
-	isFlexwerker int,
+	isAccepted tinyint,
+	isFlexwerker tinyint,
 	PRIMARY KEY (docentID)
 );
 
