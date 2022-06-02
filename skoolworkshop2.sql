@@ -1,4 +1,4 @@
-USE skool2extra;
+USE skoolworkshop2;
 
 DROP TABLE IF EXISTS DocentInOpdracht;
 DROP TABLE IF EXISTS Doelgroep;
@@ -17,8 +17,8 @@ CREATE TABLE Docent (
 	geboortedatum date NOT NULL,
 	geboorteplaats varchar(25) NOT NULL,
 	maxRijafstand int,
-	heeftRijbewijs tinyint,
-	heeftAuto tinyint,
+	heeftRijbewijs boolean,
+	heeftAuto boolean,
 	straat varchar(25) NOT NULL,
 	huisnummer int NOT NULL,
 	geslacht varchar(5) NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE Docent (
 	postcode varchar(8) NOT NULL,
 	land varchar(25) NOT NULL,
 	wachtwoord varchar(50) NOT NULL,
-	isAccepted tinyint,
-	isFlexwerker tinyint,
+	isAccepted boolean DEFAULT FALSE,
+	isFlexwerker boolean,
 	PRIMARY KEY (docentID)
 );
 
@@ -77,7 +77,7 @@ CREATE TABLE Workshop (
 
 CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
-	isBevestigd int,
+	isBevestigd boolean,
 	aantalDocenten int,
 	locatieID int,
 	workshopID int,

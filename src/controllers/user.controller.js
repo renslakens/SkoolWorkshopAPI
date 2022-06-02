@@ -82,8 +82,7 @@ let controller = {
         wachtwoord = req.body.wachtwoord;
 
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-            let sql =
-                "INSERT INTO docent (naam, achternaam, emailadres, wachtwoord) VALUES ?";
+            let sql = "INSERT INTO docent (naam, achternaam, emailadres, wachtwoord) VALUES ?";
             let values = [
                 [naam, achternaam, emailadres, hash]
             ];
