@@ -12,7 +12,7 @@ git clone https://github.com/renslakens/SkoolWorkshopAPI.git
 - Install dependencies
 ```
 cd SkoolWorkshopAPI
-npm install
+npm install bcrypt body-parser dotenv express jsonwebtoken mysql2 tracer
 ```
 - Build and run the project
 ```

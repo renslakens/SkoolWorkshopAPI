@@ -141,10 +141,10 @@ let controller = {
             function(error, results, fields) {
                 if (error) throw error;
 
-                if(results.affectedRows > 0){
+                if (results.affectedRows > 0) {
                     res.status(200).json({
-                    status: 200,
-                    message: `User with ID ${docentID} succesfully updated`,
+                        status: 200,
+                        message: `User with ID ${docentID} succesfully updated`,
                     });
                 } else {
                     res.status(400).json({
