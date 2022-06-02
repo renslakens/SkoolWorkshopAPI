@@ -88,8 +88,6 @@ let controller = {
                 [naam, achternaam, emailadres, hash]
             ];
 
-            if (err) throw err;
-
             pool.query(sql, [values], (dbError, result) => {
                 if (dbError) {
                     logger.debug(dbError.message);
