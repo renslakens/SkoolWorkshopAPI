@@ -134,6 +134,31 @@ let controller = {
             }
         );
     },
+    acceptUser: (req, res, next) => {
+        const userId = req.params.userId;
+        let user;
+        logger.debug(`User with ID ${userId} requested to be updated`);
+        dbconnection.getConnection(function(err, connection) {
+            if (err) throw err;
+
+            connection.query('UPDATE docent SET isAccepted=? WHERE id = ?;', [TRUE, userId], function (error, results, fields) {
+                connection.release();
+                if (error) throw error;
+
+                if(results.affectedRows > 0){
+                    res.status(200).json({
+                    status: 200,
+                    message: `User with ID ${userId} succesfully updated`,
+                    });
+                } else {
+                    res.status(400).json({
+                        status: 400,
+                        message: `User does not exist`,
+                    });
+                }
+            });
+        });
+    },
 };
 
 module.exports = controller;
