@@ -111,19 +111,19 @@ let controller = {
         });
     },
     deleteUser: (req, res, next) => {
-        const userId = req.params.userId;
+        const docentID = req.params.id;
         let user;
-        logger.debug(`User with ID ${userId} requested to be deleted`);
+        logger.debug(`User with ID ${docentID} requested to be deleted`);
 
         pool.query(
-            "DELETE FROM docent WHERE id = ?;", [userId],
+            "DELETE FROM docent WHERE docentID = ?;", [docentID],
             function(error, results, fields) {
                 if (error) throw error;
 
                 if (results.affectedRows > 0) {
                     res.status(200).json({
                         status: 200,
-                        message: `User with ID ${userId} succesfully deleted`,
+                        message: `User with ID ${docentID} succesfully deleted`,
                     });
                 } else {
                     res.status(400).json({
@@ -135,20 +135,19 @@ let controller = {
         );
     },
     acceptUser: (req, res, next) => {
-        const userId = req.params.userId;
+        const docentID = req.params.id;
         let user;
-        logger.debug(`User with ID ${userId} requested to be updated`);
-        dbconnection.getConnection(function(err, connection) {
-            if (err) throw err;
+        logger.debug(`User with ID ${docentID} requested to be updated`);
 
-            connection.query('UPDATE docent SET isAccepted=? WHERE id = ?;', [TRUE, userId], function (error, results, fields) {
-                connection.release();
+        pool.query(
+            "UPDATE docent SET isAccepted = ? WHERE docentID = ?;", [1, docentID],
+            function(error, results, fields) {
                 if (error) throw error;
 
                 if(results.affectedRows > 0){
                     res.status(200).json({
                     status: 200,
-                    message: `User with ID ${userId} succesfully updated`,
+                    message: `User with ID ${docentID} succesfully updated`,
                     });
                 } else {
                     res.status(400).json({
@@ -156,8 +155,8 @@ let controller = {
                         message: `User does not exist`,
                     });
                 }
-            });
-        });
+            }
+        )
     },
 };
 
