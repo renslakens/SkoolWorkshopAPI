@@ -30,10 +30,42 @@ let controller = {
                 }
 
                 if (results && results.length === 1) {
-                    // User found with this emailAddress
+                    logger.debug(results[0].wachtwoord);
+                    // User found with this emailaddress
                     // Check if password's correct
-                    bcrypt.compare(results[0].wachtwoord, req.body.wachtwoord, function(err, result) {
+                    bcrypt.compare(req.body.wachtwoord, results[0].wachtwoord, function(err, res) {
                         if (err) {
+                            logger.error(err);
+                            res.status(err.status).json(err);
+                        }
+                        if (res) {
+                            // Send JWT
+                            logger.info(
+                                "passwords matched, sending userinfo en valid token."
+                            );
+
+                            const { password, ...userinfo } = results[0];
+                            const payload = {
+                                docentID: userinfo.docentID,
+                            };
+
+                            logger.debug(payload);
+
+                            jwt.sign(
+                                payload,
+                                jwtSecretKey, { expiresIn: "25d" },
+                                function(err, token) {
+                                    if (token) {
+                                        logger.info("User logged in, sending: ", userinfo);
+                                        res.status(200).json({
+                                            status: 200,
+                                            result: {...userinfo, token },
+                                        });
+                                    }
+                                }
+                            );
+                        } else {
+                            // response is OutgoingMessage object that server response http request
                             logger.info("Password invalid");
                             res.status(401).json({
                                 status: 401,
@@ -41,32 +73,8 @@ let controller = {
                                 datetime: new Date().toISOString,
                             });
                         }
-                        //email and password are correct
-                        logger.info(
-                            "passwords matched, sending userinfo en valid token."
-                        );
-
-                        const { password, ...userinfo } = results[0];
-                        const payload = {
-                            docentID: userinfo.docentID,
-                        };
-
-                        logger.debug(payload);
-
-                        jwt.sign(
-                            payload,
-                            jwtSecretKey, { expiresIn: "25d" },
-                            function(err, token) {
-                                if (token) {
-                                    logger.info("User logged in, sending: ", userinfo);
-                                    res.status(200).json({
-                                        status: 200,
-                                        result: {...userinfo, token },
-                                    });
-                                }
-                            }
-                        );
                     });
+
                 } else {
                     const queryString = "SELECT medewerkerID, naam, achternaam, emailadres, wachtwoord FROM Medewerker WHERE emailadres = ?";
                     pool.query(
@@ -83,8 +91,39 @@ let controller = {
                             if (results && results.length === 1) {
                                 // User found with this emailAddress
                                 // Check if password's correct
-                                bcrypt.compare(results[0].wachtwoord, req.body.wachtwoord, function(err, result) {
+                                bcrypt.compare(req.body.wachtwoord, results[0].wachtwoord, function(err, res) {
                                     if (err) {
+                                        logger.error(err);
+                                        res.status(err.status).json(err);
+                                    }
+                                    if (res) {
+                                        // Send JWT
+                                        logger.info(
+                                            "passwords matched, sending userinfo en valid token."
+                                        );
+
+                                        const { password, ...userinfo } = results[0];
+                                        const payload = {
+                                            docentID: userinfo.docentID,
+                                        };
+
+                                        logger.debug(payload);
+
+                                        jwt.sign(
+                                            payload,
+                                            jwtSecretKey, { expiresIn: "25d" },
+                                            function(err, token) {
+                                                if (token) {
+                                                    logger.info("User logged in, sending: ", userinfo);
+                                                    res.status(200).json({
+                                                        status: 200,
+                                                        result: {...userinfo, token },
+                                                    });
+                                                }
+                                            }
+                                        );
+                                    } else {
+                                        // response is OutgoingMessage object that server response http request
                                         logger.info("Password invalid");
                                         res.status(401).json({
                                             status: 401,
@@ -92,31 +131,6 @@ let controller = {
                                             datetime: new Date().toISOString,
                                         });
                                     }
-                                    //email and password are correct
-                                    logger.info(
-                                        "passwords matched, sending userinfo en valid token."
-                                    );
-
-                                    const { password, ...userinfo } = results[0];
-                                    const payload = {
-                                        docentID: userinfo.docentID,
-                                    };
-
-                                    logger.debug(payload);
-
-                                    jwt.sign(
-                                        payload,
-                                        jwtSecretKey, { expiresIn: "25d" },
-                                        function(err, token) {
-                                            if (token) {
-                                                logger.info("User logged in, sending: ", userinfo);
-                                                res.status(200).json({
-                                                    status: 200,
-                                                    result: {...userinfo, token },
-                                                });
-                                            }
-                                        }
-                                    );
                                 });
                             } else {
                                 logger.info("User not found");
