@@ -87,6 +87,13 @@ let controller = {
                 [naam, achternaam, emailadres, hash]
             ];
 
+            if (err) {
+                logger.error('Could not encrypt password')
+                return next({ status: 500, message: 'Could not encrypt password' })
+            }
+
+            wachtwoord = hash;
+
             pool.query(sql, [values], (dbError, result) => {
                 if (dbError) {
                     logger.debug(dbError.message);

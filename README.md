@@ -26,7 +26,6 @@ End-points of the API
 - Login: `http://localhost:3000/api/auth/login`
 
 ## Authors
-
 - Rens Lakens
 - Ayrianna Chatlein
 - Bram Gelten
