@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
     logger.debug("User is on default endpoint");
     res.status(200).json({
         status: 200,
-        result: "Share A Meal API",
+        result: "Skool Workshop API",
     });
 });
 
