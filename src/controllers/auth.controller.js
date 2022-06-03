@@ -16,130 +16,126 @@ let controller = {
 
         const queryString = "SELECT docentID, naam, achternaam, emailadres, wachtwoord FROM Docent WHERE emailadres = ?";
 
-        pool.query(
-            queryString, [emailadres],
-            function(error, results, fields) {
+        pool.query(queryString, [emailadres], function(error, results, fields) {
+            // Handle error after the release.
+            if (error) {
+                logger.error("Error: ", err.toString());
+                res.status(500).json({
+                    error: err.toString(),
+                    datetime: new Date().toISOString(),
+                });
+            }
 
-                // Handle error after the release.
-                if (error) {
-                    logger.error("Error: ", err.toString());
-                    res.status(500).json({
-                        error: err.toString(),
-                        datetime: new Date().toISOString(),
-                    });
-                }
+            if (results && results.length === 1) {
+                logger.debug(results[0].wachtwoord);
+                // User found with this emailaddress
+                // Check if password's correct
+                bcrypt.compare(req.body.wachtwoord, results[0].wachtwoord).then((match) => {
+                    if (match) {
+                        logger.info(
+                            "passwords matched, sending userinfo en valid token."
+                        );
 
-                if (results && results.length === 1) {
-                    logger.debug(results[0].wachtwoord);
-                    // User found with this emailaddress
-                    // Check if password's correct
-                    bcrypt.compare(req.body.wachtwoord, results[0].wachtwoord).then((match) => {
-                        if (match) {
-                            logger.info(
-                                "passwords matched, sending userinfo en valid token."
-                            );
+                        const { wachtwoord, ...userinfo } = results[0];
+                        logger.debug("password, ", wachtwoord);
+                        const payload = {
+                            docentID: userinfo.docentID,
+                        };
 
-                            const { wachtwoord, ...userinfo } = results[0];
-                            logger.debug("password, ", wachtwoord);
-                            const payload = {
-                                docentID: userinfo.docentID,
-                            };
+                        logger.debug(payload);
 
-                            logger.debug(payload);
-
-                            jwt.sign(
-                                payload,
-                                jwtSecretKey, { expiresIn: "25d" },
-                                function(error, token) {
-                                    if (error) throw error;
-                                    if (token) {
-                                        logger.info("User logged in, sending: ", userinfo);
-                                        res.status(200).json({
-                                            status: 200,
-                                            result: {...userinfo, token },
-                                        });
-                                    }
+                        jwt.sign(
+                            payload,
+                            jwtSecretKey, { expiresIn: "25d" },
+                            function(error, token) {
+                                if (error) throw error;
+                                if (token) {
+                                    logger.info("User logged in, sending: ", userinfo);
+                                    res.status(200).json({
+                                        status: 200,
+                                        result: {...userinfo, token },
+                                    });
                                 }
-                            );
+                            }
+                        );
+                    } else {
+                        // response is OutgoingMessage object that server response http request
+                        logger.info("Password invalid");
+                        logger.debug("password, ", req.body.wachtwoord);
+                        res.status(401).json({
+                            status: 401,
+                            message: "Wachtwoord ongeldig.",
+                            datetime: new Date().toISOString,
+                        });
+                    }
+                });
+            } else {
+                const queryString = "SELECT medewerkerID, naam, achternaam, emailadres, wachtwoord FROM Medewerker WHERE emailadres = ?";
+                pool.query(
+                    queryString, [emailadres],
+                    function(error, results, fields) {
+
+                        if (error) {
+                            logger.error("Error: ", err.toString());
+                            res.status(500).json({
+                                error: err.toString(),
+                                datetime: new Date().toISOString(),
+                            });
+                        }
+                        if (results && results.length === 1) {
+                            // User found with this emailAddress
+                            // Check if password's correct
+                            bcrypt.compare(req.body.wachtwoord, results[0].wachtwoord).then((match) => {
+                                if (match) {
+                                    logger.info(
+                                        "passwords matched, sending userinfo en valid token."
+                                    );
+
+                                    const { wachtwoord, ...userinfo } = results[0];
+                                    logger.debug("password, ", wachtwoord);
+                                    const payload = {
+                                        docentID: userinfo.docentID,
+                                    };
+
+                                    logger.debug(payload);
+
+                                    jwt.sign(
+                                        payload,
+                                        jwtSecretKey, { expiresIn: "25d" },
+                                        function(error, token) {
+                                            if (error) throw error;
+                                            if (token) {
+                                                logger.info("User logged in, sending: ", userinfo);
+                                                res.status(200).json({
+                                                    status: 200,
+                                                    result: {...userinfo, token },
+                                                });
+                                            }
+                                        }
+                                    );
+                                } else {
+                                    // response is OutgoingMessage object that server response http request
+                                    logger.info("Password invalid");
+                                    logger.debug("password, ", req.body.wachtwoord);
+                                    res.status(401).json({
+                                        status: 401,
+                                        message: "Wachtwoord ongeldig.",
+                                        datetime: new Date().toISOString,
+                                    });
+                                }
+                            });
                         } else {
-                            // response is OutgoingMessage object that server response http request
-                            logger.info("Password invalid");
-                            logger.debug("password, ", req.body.wachtwoord);
-                            res.status(401).json({
-                                status: 401,
-                                message: "Wachtwoord ongeldig.",
+                            logger.info("User not found");
+                            res.status(404).json({
+                                status: 404,
+                                message: `Gebruiker met emailadres ${emailadres} niet gevonden.`,
                                 datetime: new Date().toISOString,
                             });
                         }
-                    });
-                } else {
-                    const queryString = "SELECT medewerkerID, naam, achternaam, emailadres, wachtwoord FROM Medewerker WHERE emailadres = ?";
-                    pool.query(
-                        queryString, [emailadres],
-                        function(error, results, fields) {
-
-                            if (error) {
-                                logger.error("Error: ", err.toString());
-                                res.status(500).json({
-                                    error: err.toString(),
-                                    datetime: new Date().toISOString(),
-                                });
-                            }
-                            if (results && results.length === 1) {
-                                // User found with this emailAddress
-                                // Check if password's correct
-                                bcrypt.compare(req.body.wachtwoord, results[0].wachtwoord).then((match) => {
-                                    if (match) {
-                                        logger.info(
-                                            "passwords matched, sending userinfo en valid token."
-                                        );
-
-                                        const { wachtwoord, ...userinfo } = results[0];
-                                        logger.debug("password, ", wachtwoord);
-                                        const payload = {
-                                            docentID: userinfo.docentID,
-                                        };
-
-                                        logger.debug(payload);
-
-                                        jwt.sign(
-                                            payload,
-                                            jwtSecretKey, { expiresIn: "25d" },
-                                            function(error, token) {
-                                                if (error) throw error;
-                                                if (token) {
-                                                    logger.info("User logged in, sending: ", userinfo);
-                                                    res.status(200).json({
-                                                        status: 200,
-                                                        result: {...userinfo, token },
-                                                    });
-                                                }
-                                            }
-                                        );
-                                    } else {
-                                        // response is OutgoingMessage object that server response http request
-                                        logger.info("Password invalid");
-                                        logger.debug("password, ", req.body.wachtwoord);
-                                        res.status(401).json({
-                                            status: 401,
-                                            message: "Wachtwoord ongeldig.",
-                                            datetime: new Date().toISOString,
-                                        });
-                                    }
-                                });
-                            } else {
-                                logger.info("User not found");
-                                res.status(404).json({
-                                    status: 404,
-                                    message: `Gebruiker met emailadres ${emailadres} niet gevonden.`,
-                                    datetime: new Date().toISOString,
-                                });
-                            }
-                        }
-                    );
-                }
+                    }
+                );
             }
-        );
+        });
     },
     validateLogin: (req, res, next) => {
         //Make sure you have the expected input
