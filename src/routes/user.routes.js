@@ -18,7 +18,7 @@ router.post("/", userController.validateUser, userController.addUser);
 // router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
 
 // Put route for accepting a new docent
-router.put('/accept/:id', userController.validateId, userController.acceptUser);
+router.put('/:id', userController.validateId, userController.acceptUser);
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
