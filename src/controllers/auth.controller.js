@@ -14,7 +14,7 @@ let controller = {
         const { emailadres } = req.body;
         logger.debug(emailadres, " ", req.body.wachtwoord);
 
-        const queryString = "SELECT docentID, naam, achternaam, emailadres, wachtwoord FROM Docent WHERE emailadres = ?";
+        const queryString = "SELECT docentID, naam, achternaam, emailadres, wachtwoord, isAccepted FROM Docent WHERE emailadres = ?";
 
         pool.query(queryString, [emailadres], function(error, results, fields) {
             // Handle error after the release.
