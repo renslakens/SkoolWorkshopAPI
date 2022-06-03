@@ -87,16 +87,11 @@ let controller = {
                 [naam, achternaam, emailadres, hash]
             ];
 
-<<<<<<< HEAD
             if (err) {
                 logger.error('Could not encrypt password')
                 return next({ status: 500, message: 'Could not encrypt password' })
             }
 
-            wachtwoord = hash;
-
-=======
->>>>>>> feature-acceptdenyuser
             pool.query(sql, [values], (dbError, result) => {
                 if (dbError) {
                     logger.debug(dbError.message);
@@ -173,15 +168,15 @@ let controller = {
         pool.query(
             "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.emailadres, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, docentID],
             function(error, results, fields) {
-                if(error){
+                if (error) {
                     res.status(401).json({
                         status: 401,
                         message: `Update failed, provided email already taken`
                     })
                     return;
                 }
-                if(results.affectedRows>0){
-                    connection.query('SELECT * FROM user WHERE id = ?;', [docentID], function (error, results, fields) {
+                if (results.affectedRows > 0) {
+                    connection.query('SELECT * FROM user WHERE id = ?;', [docentID], function(error, results, fields) {
                         res.status(200).json({
                             status: 200,
                             result: results[0],
