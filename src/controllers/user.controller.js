@@ -115,7 +115,7 @@ let controller = {
     getAllUsers: (req, res, next) => {
         const { naam, isAccepted } = req.query;
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
-    
+
         let queryString = "SELECT * FROM `Docent`";
     
         if (naam || isAccepted) {
