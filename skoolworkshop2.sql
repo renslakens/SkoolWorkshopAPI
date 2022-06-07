@@ -26,7 +26,7 @@ CREATE TABLE Docent (
 	woonplaats varchar(15) NOT NULL,
 	postcode varchar(8) NOT NULL,
 	land varchar(25) NOT NULL,
-	wachtwoord varchar(50) NOT NULL,
+	wachtwoord varchar(60) NOT NULL,
 	isAccepted boolean DEFAULT FALSE,
 	isFlexwerker boolean,
 	PRIMARY KEY (docentID)
@@ -37,7 +37,7 @@ CREATE TABLE Medewerker (
 	naam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
 	emailadres varchar(25) NOT NULL UNIQUE,
-	wachtwoord varchar(50) NOT NULL,
+	wachtwoord varchar(60) NOT NULL,
 	soortMedewerker varchar(10) NOT NULL,
 	PRIMARY KEY (medewerkerID)
 );

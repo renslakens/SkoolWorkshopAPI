@@ -12,7 +12,7 @@ git clone https://github.com/renslakens/SkoolWorkshopAPI.git
 - Install dependencies
 ```
 cd SkoolWorkshopAPI
-npm install
+npm install bcrypt body-parser dotenv express jsonwebtoken mysql2 tracer
 ```
 - Build and run the project
 ```
@@ -26,7 +26,6 @@ End-points of the API
 - Login: `http://localhost:3000/api/auth/login`
 
 ## Authors
-
 - Rens Lakens
 - Ayrianna Chatlein
 - Bram Gelten
