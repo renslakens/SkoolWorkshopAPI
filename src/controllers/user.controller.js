@@ -142,7 +142,7 @@ let controller = {
             }
     
             // Don't use the connection here, it has been returned to the dbconnection.
-            logger.debug("#results =", results.length);
+            // logger.debug("#results =", results.length);
             res.status(200).json({
               status: 200,
               result: results,

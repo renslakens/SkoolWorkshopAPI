@@ -6,10 +6,10 @@ const userController = require("../controllers/user.controller");
 router.post("/", userController.validateUser, userController.addUser);
 
 //Get all users
-router.get('/getAllUsers', userController.validateId, userController.getAllUsers);
+router.get('/', userController.getAllUsers);
 
 // //Get route for profile
-// router.get('/profile', authController.validateToken, userController.getUserProfile);
+// router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
 
 // //Get routes for specific users
 // router.get('/:id', authController.validateToken, userController.validateId, userController.getUserById);
