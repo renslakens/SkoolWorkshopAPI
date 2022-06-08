@@ -63,6 +63,7 @@ let controller = {
         const userId = req.params.id;
         try {
             assert(Number.isInteger(parseInt(userId)), "ID must be a number");
+            logger.debug("ValidateID is done")
             next();
         } catch (err) {
             logger.debug(req.body);
@@ -117,37 +118,34 @@ let controller = {
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
 
         let queryString = "SELECT * FROM `Docent`";
-    
+
         if (naam || isAccepted) {
-          queryString += " WHERE ";
-          if (naam) {
-            queryString += `naam LIKE '%${naam}%'`;
-          }
-          if (naam && isAccepted) {
-            queryString += " AND ";
-          }
-          if (isAccepted) {
-            queryString += `isAccepted='${isAccepted}'`;
-          }
+            queryString += " WHERE ";
+            if (naam) {
+                queryString += `naam LIKE '%${naam}%'`;
+            }
+            if (naam && isAccepted) {
+                queryString += " AND ";
+            }
+            if (isAccepted) {
+                queryString += `isAccepted='${isAccepted}'`;
+            }
         }
         logger.debug(queryString);
-    
-          // Use the connection
-          pool.query(queryString, function (error, results, fields) {
-            // When done with the connection, release it.
-    
+
+        pool.query(queryString, function(error, results, fields) {
+
             // Handle error after the release.
             if (error) {
-              next(error);
+                next(error);
             }
-    
-            // Don't use the connection here, it has been returned to the dbconnection.
+
             // logger.debug("#results =", results.length);
             res.status(200).json({
-              status: 200,
-              result: results,
+                status: 200,
+                result: results,
             });
-          });
+        });
     },
     deleteUser: (req, res, next) => {
         const docentID = req.params.id;
