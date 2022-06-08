@@ -1,69 +1,73 @@
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-const logger = require('./src/config/config').logger
-require('dotenv').config()
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const logger = require("./src/config/config").logger;
+require("dotenv").config();
 
-const port = process.env.PORT
+const port = process.env.PORT;
 
-const dbconnection = require('./dbconnection')
-const userRoutes = require('./src/routes/user.routes')
-const authRoutes = require('./src/routes/auth.routes')
-const workshopRoutes = require('./src/routes/workshop.routes')
+const dbconnection = require("./dbconnection");
+const userRoutes = require("./src/routes/user.routes");
+const authRoutes = require("./src/routes/auth.routes");
+const workshopRoutes = require("./src/routes/workshop.routes");
+const jobRoutes = require("./src/routes/job.routes");
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-app.all('*', (req, res, next) => {
-  const method = req.method
+app.all("*", (req, res, next) => {
+  const method = req.method;
 
-  logger.debug(`Method ${method} is aangeroepen`)
-  next()
-})
+  logger.debug(`Method ${method} is aangeroepen`);
+  next();
+});
 
 //Default route
-app.get('/', (req, res) => {
-  logger.debug('User is on default endpoint')
+app.get("/", (req, res) => {
+  logger.debug("User is on default endpoint");
   res.status(200).json({
     status: 200,
-    result: 'Skool Workshop API',
-  })
-})
+    result: "Skool Workshop API",
+  });
+});
 
 //User route
-app.use('/api/user', userRoutes)
+app.use("/api/user", userRoutes);
 
 //Authentication route
-app.use('/api/auth/login', authRoutes)
+app.use("/api/auth/login", authRoutes);
 
 //Workshop route
-app.use('/api/workshop', workshopRoutes)
+app.use("/api/workshop", workshopRoutes);
 
-app.all('*', (req, res) => {
+//Job route
+app.use("/api/job", jobRoutes);
+
+app.all("*", (req, res) => {
   res.status(401).json({
     status: 401,
-    result: 'End-point not found',
-  })
-})
+    result: "End-point not found",
+  });
+});
 
 //Error handler
 app.use((err, req, res, next) => {
-  logger.error(err)
-  res.status(err.status).json(err)
-})
+  logger.error(err);
+  res.status(err.status).json(err);
+});
 
 //Welcome message
 app.listen(port, () => {
-  logger.debug(`API listening on port ${port}`)
-})
+  logger.debug(`API listening on port ${port}`);
+});
 
-process.on('SIGINT', () => {
-  logger.debug('SIGINT signal received: closing HTTP server')
+process.on("SIGINT", () => {
+  logger.debug("SIGINT signal received: closing HTTP server");
   dbconnection.end((err) => {
-    logger.debug('Database connection closed')
-  })
+    logger.debug("Database connection closed");
+  });
   app.close(() => {
-    logger.debug('HTTP server closed')
-  })
-})
+    logger.debug("HTTP server closed");
+  });
+});
 
-module.exports = app
+module.exports = app;
