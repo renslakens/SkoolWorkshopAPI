@@ -70,7 +70,8 @@ CREATE TABLE Locatie (
 CREATE TABLE Workshop (
 	workshopID int NOT NULL AUTO_INCREMENT,
 	naam varchar(50),
-	salarisindicatie decimal(2,1),
+	startTijd datetime,
+	eindTijd datetime,
 	beschrijving varchar(250),
 	PRIMARY KEY (workshopID)
 );
@@ -79,6 +80,8 @@ CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
 	isBevestigd boolean,
 	aantalDocenten int,
+	startTijd datetime,
+	eindTijd datetime,
 	locatieID int,
 	workshopID int,
 	PRIMARY KEY (opdrachtID),
