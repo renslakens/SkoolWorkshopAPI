@@ -117,37 +117,37 @@ let controller = {
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
 
         let queryString = "SELECT * FROM `Docent`";
-    
+
         if (naam || isAccepted) {
-          queryString += " WHERE ";
-          if (naam) {
-            queryString += `naam LIKE '%${naam}%'`;
-          }
-          if (naam && isAccepted) {
-            queryString += " AND ";
-          }
-          if (isAccepted) {
-            queryString += `isAccepted='${isAccepted}'`;
-          }
+            queryString += " WHERE ";
+            if (naam) {
+                queryString += `naam LIKE '%${naam}%'`;
+            }
+            if (naam && isAccepted) {
+                queryString += " AND ";
+            }
+            if (isAccepted) {
+                queryString += `isAccepted='${isAccepted}'`;
+            }
         }
         logger.debug(queryString);
-    
-          // Use the connection
-          pool.query(queryString, function (error, results, fields) {
+
+        // Use the connection
+        pool.query(queryString, function(error, results, fields) {
             // When done with the connection, release it.
-    
+
             // Handle error after the release.
             if (error) {
-              next(error);
+                next(error);
             }
-    
+
             // Don't use the connection here, it has been returned to the dbconnection.
             logger.debug("#results =", results.length);
             res.status(200).json({
-              status: 200,
-              result: results,
+                status: 200,
+                result: results,
             });
-          });
+        });
     },
     deleteUser: (req, res, next) => {
         const docentID = req.params.id;
@@ -227,6 +227,34 @@ let controller = {
                 }
             }
         )
+    },
+    uploadFile: (req, res, next) => {
+        let sampleFile;
+        let uploadPath;
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+            res.status(400).json({
+                status: 400,
+                message: `No files uploaded`
+            })
+            return;
+        }
+
+        sampleFile = req.files.sampleFile;
+        uploadPath = __dirname + '/upload/' + sampleFile.name;
+        logger.debug(sampleFile);
+
+        sampleFile.mv(uploadPath, function(err) {
+            if (err) return res.status(500).json({
+                status: 500,
+                message: err
+            });
+
+            res.status(200).json({
+                status: 200,
+                message: `File uploaded!`
+            });
+        });
     }
 };
 
