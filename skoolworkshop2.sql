@@ -45,10 +45,11 @@ CREATE TABLE Medewerker (
 CREATE TABLE Klant (
 	klantID int NOT NULL AUTO_INCREMENT,
 	naam varchar(25) NOT NULL,
+	achternaam varchar(25) NOT NULL,
 	postcode varchar(8) NOT NULL,
 	telefoonnummer varchar(10) NOT NULL,
 	straat varchar(25) NOT NULL,
-	huisnummer int NOT NULL,
+	huisnummer varchar NOT NULL,
 	plaats varchar(25) NOT NULL,
 	klantType varchar(25),
 	land varchar(25) NOT NULL,
@@ -78,7 +79,6 @@ CREATE TABLE Workshop (
 
 CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
-	isBevestigd boolean,
 	aantalDocenten int,
 	startTijd datetime,
 	eindTijd datetime,
@@ -98,6 +98,7 @@ CREATE TABLE Doelgroep (
 );
 
 CREATE TABLE DocentInOpdracht (
+	isBevestigd boolean DEFAULT FALSE,
 	docentID int,
 	opdrachtID int,
 	FOREIGN KEY (docentID) REFERENCES Docent(docentID),

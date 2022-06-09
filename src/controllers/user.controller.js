@@ -113,8 +113,6 @@ let controller = {
             });
         });
     },
-<<<<<<< Updated upstream
-=======
     getAllUsers: (req, res, next) => {
         const { naam, isAccepted } = req.query;
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
@@ -149,7 +147,6 @@ let controller = {
             });
         });
     },
->>>>>>> Stashed changes
     deleteUser: (req, res, next) => {
         const docentID = req.params.id;
         let user;
