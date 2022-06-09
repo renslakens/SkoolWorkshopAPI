@@ -3,29 +3,32 @@ const logger = require('../config/config').logger
 
 let controller = {
   addWorkshop: (req, res) => {
-    let workshop = req.body
+    const workshop = req.body
 
     pool.query(
-      'INSERT INTO Workshop (naam, salarisindicatie, beschrijving) VALUES (?,?,?);',
+      'INSERT INTO Workshop (naam, beschrijving) VALUES (?,?);',
       [
         workshop.naam,
-        workshop.startTijd,
-        workshop.eindTijd,
-        workshop.beschrjiving,
+        workshop.beschrijving,
       ],
-      function (error, result) {
-        if (error) {
-          logger.debug(error.sqlMessage)
-          res.status(400).json({
-            status: 400,
-            message: 'Oeps, er is iets fout gegaan ' + error,
-          })
+      (dbError, result) => {
+        if (dbError) {
+          logger.debug(dbError.message);
+          const error = {
+            status: 409,
+            message: "Workshop has not been added",
+            result: "Workshop is niet toegevoegd in database",
+          };
+          next(error);
+        } else {
+          logger.debug("InsertId is: ", result.insertId);
+          res.status(201).json({
+            status: 201,
+            message: "Workshop is toegevoegd in database",
+            result: { id: result.insertId, ...workshop },
+          });
         }
-        res.status(201).json({
-          status: 201,
-          message: 'Workshop is toegevoegd',
-        })
-      },
+      }
     )
   },
   deleteWorkshop: (req, res) => {

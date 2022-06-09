@@ -81,11 +81,12 @@ let controller = {
         achternaam = req.body.achternaam;
         emailadres = req.body.emailadres;
         wachtwoord = req.body.wachtwoord;
+        soortmedewerker = req.body.soortmedewerker;
 
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-            let sql = "INSERT INTO docent (naam, achternaam, emailadres, wachtwoord) VALUES ?";
+            let sql = "INSERT INTO medewerker (naam, achternaam, emailadres, wachtwoord, soortMedewerker) VALUES ?";
             let values = [
-                [naam, achternaam, emailadres, hash]
+                [naam, achternaam, emailadres, hash, soortmedewerker]
             ];
 
             if (err) {
