@@ -200,7 +200,7 @@ let controller = {
                 datetime: new Date().toISOString,
               })
             }
-            if (payload.docentID) {
+            if (payload) {
               logger.debug('token is valid', payload)
               //User has acces. Add userId from payload to
               //request, for every next endpoint
@@ -234,7 +234,7 @@ let controller = {
                 datetime: new Date().toISOString,
               })
             }
-            if (payload.medewerkerID) {
+            if (payload) {
               logger.debug('token is valid', payload)
               //User has acces. Add userId from payload to
               //request, for every next endpoint
@@ -242,7 +242,7 @@ let controller = {
               req.medewerkerID = payload.medewerkerID
               next()
             }
-          })
+        })
         }
       },
     }
