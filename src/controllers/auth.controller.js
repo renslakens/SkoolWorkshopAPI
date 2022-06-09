@@ -199,32 +199,6 @@ let controller = {
             status: 401,
             message: "Not authorized",
             datetime: new Date().toISOString,
-<<<<<<< HEAD
-          })
-        } else {
-          const token = authHeader.substring(7, authHeader.length)
-          logger.debug(token)
-    
-          jwt.verify(token, jwtSecretKey, (err, payload) => {
-            logger.debug(payload)
-            if (err) {
-              logger.warn(err.message)
-              res.status(401).json({
-                status: 401,
-                message: 'Not authorized',
-                datetime: new Date().toISOString,
-              })
-            }
-            if (payload) {
-              logger.debug('token is valid', payload)
-              //User has acces. Add userId from payload to
-              //request, for every next endpoint
-              logger.debug(payload.docentID)
-              req.docentID = payload.docentID
-              next()
-            }
-          })
-=======
           });
         }
         if (payload.docentID) {
@@ -234,7 +208,6 @@ let controller = {
           logger.debug(payload.docentID);
           req.docentID = payload.docentID;
           next();
->>>>>>> b127751c4f8a793e6a2bc74e3d2fda2632559339
         }
       });
     }
@@ -260,34 +233,7 @@ let controller = {
             status: 401,
             message: "Not authorized",
             datetime: new Date().toISOString,
-<<<<<<< HEAD
-          })
-        } else {
-          const token = authHeader.substring(7, authHeader.length)
-          logger.debug(token)
-    
-          jwt.verify(token, jwtSecretKey, (err, payload) => {
-            logger.debug(payload)
-            if (err) {
-              logger.warn(err.message)
-              res.status(401).json({
-                status: 401,
-                message: 'Not authorized',
-                datetime: new Date().toISOString,
-              })
-            }
-            if (payload) {
-              logger.debug('token is valid', payload)
-              //User has acces. Add userId from payload to
-              //request, for every next endpoint
-              logger.debug(payload.medewerkerID)
-              req.medewerkerID = payload.medewerkerID
-              next()
-            }
-        })
-=======
           });
->>>>>>> b127751c4f8a793e6a2bc74e3d2fda2632559339
         }
         if (payload.medewerkerID) {
           logger.debug("token is valid", payload);
