@@ -49,7 +49,7 @@ CREATE TABLE Klant (
 	postcode varchar(8) NOT NULL,
 	telefoonnummer varchar(10) NOT NULL,
 	straat varchar(25) NOT NULL,
-	huisnummer varchar NOT NULL,
+	huisnummer varchar(5) NOT NULL,
 	plaats varchar(25) NOT NULL,
 	klantType varchar(25),
 	land varchar(25) NOT NULL,
