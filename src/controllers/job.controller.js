@@ -74,8 +74,8 @@ let controller = {
       .slice(0, 19);
 
     pool.query(
-      "UPDATE Opdracht SET naam=?, startTijd=?, eindTijd=?, beschrijving=? WHERE jobID =?;",
-      [job.naam, startTijd, eindTijd, job.beschrjiving, jobID],
+      "UPDATE Opdracht SET aantalDocenten=?, startTijd=?, eindTijd=? WHERE jobID =?;",
+      [job.aantalDocenten, startTijd, eindTijd, jobID],
       function (error, result) {
         if (error) {
           res.status(400).json({
@@ -97,13 +97,7 @@ let controller = {
       }
     );
   },
-  getJobs: (req, res) => {
-    pool.query("GET opdrachtID, aantalDocente");
-    res.status(200).json({
-      status: 200,
-      result: database,
-    });
-  },
+  getJobs: (req, res) => {},
 };
 
 module.exports = controller;
