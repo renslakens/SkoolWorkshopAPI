@@ -9,7 +9,7 @@ router.post("/", userController.validateUser, userController.addUser);
 router.get('/', userController.getAllUsers);
 
 // //Get all accepted profiles
-router.get('/profile', userController.getAllAcceptedUsers);
+router.get('/accepted', userController.getAllAcceptedUsers);
 
 // //Get route for profile
 //router.get('/profile', authController.validateToken, userController.getUserProfile);
