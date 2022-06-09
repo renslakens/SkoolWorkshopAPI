@@ -91,14 +91,10 @@ let controller = {
                             // User found with this emailAddress
                             // Check if password's correct
                             bcrypt.compare(
-                                req.body.wachtwoord,
-                                results[0].wachtwoord,
-                                function(err, res) {
-                                    if (err) {
-                                        logger.error(err);
-                                        res.status(err.status).json(err);
-                                    }
-                                    if (res) {
+                                    req.body.wachtwoord,
+                                    results[0].wachtwoord)
+                                .then((match) => {
+                                    if (match) {
                                         // Send JWT
                                         logger.info(
                                             "passwords matched, sending userinfo en valid token."
@@ -115,6 +111,7 @@ let controller = {
                                             payload,
                                             jwtSecretKey, { expiresIn: "25d" },
                                             function(err, token) {
+                                                if (err) throw err;
                                                 if (token) {
                                                     logger.info("User logged in, sending: ", userinfo);
                                                     res.status(200).json({
@@ -122,10 +119,10 @@ let controller = {
                                                         result: {...userinfo, token },
                                                     });
                                                 }
+                                                logger.debug("Logged in");
                                             }
                                         );
                                     } else {
-                                        // response is OutgoingMessage object that server response http request
                                         logger.info("Password invalid");
                                         res.status(401).json({
                                             status: 401,
@@ -133,8 +130,7 @@ let controller = {
                                             datetime: new Date().toISOString,
                                         });
                                     }
-                                }
-                            );
+                                });
                         } else {
                             logger.info("User not found");
                             res.status(404).json({
