@@ -84,6 +84,7 @@ CREATE TABLE Opdracht (
 	eindTijd datetime,
 	locatieID int,
 	workshopID int,
+	/* klantID*/
 	PRIMARY KEY (opdrachtID),
 	FOREIGN KEY (locatieID) REFERENCES Locatie(locatieID),
 	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID)
