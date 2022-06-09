@@ -33,15 +33,10 @@ let controller = {
         logger.debug(results[0].wachtwoord);
         // User found with this emailaddress
         // Check if password's correct
-        bcrypt.compare(
-          req.body.wachtwoord,
-          results[0].wachtwoord,
-          function (err, res) {
-            if (err) {
-              logger.error(err);
-              res.status(err.status).json(err);
-            }
-            if (res) {
+        bcrypt
+          .compare(req.body.wachtwoord, results[0].wachtwoord)
+          .then((match) => {
+            if (match) {
               // Send JWT
               logger.info(
                 "passwords matched, sending userinfo en valid token."
@@ -59,6 +54,7 @@ let controller = {
                 jwtSecretKey,
                 { expiresIn: "25d" },
                 function (err, token) {
+                  if (err) throw err;
                   if (token) {
                     logger.info("User logged in, sending: ", userinfo);
                     res.status(200).json({
@@ -70,7 +66,6 @@ let controller = {
                 }
               );
             } else {
-              // response is OutgoingMessage object that server response http request
               logger.info("Password invalid");
               res.status(401).json({
                 status: 401,
@@ -78,8 +73,7 @@ let controller = {
                 datetime: new Date().toISOString,
               });
             }
-          }
-        );
+          });
       } else {
         const queryString =
           "SELECT medewerkerID, naam, achternaam, emailadres, wachtwoord FROM Medewerker WHERE emailadres = ?";
@@ -97,15 +91,10 @@ let controller = {
             if (results && results.length === 1) {
               // User found with this emailAddress
               // Check if password's correct
-              bcrypt.compare(
-                req.body.wachtwoord,
-                results[0].wachtwoord,
-                function (err, res) {
-                  if (err) {
-                    logger.error(err);
-                    res.status(err.status).json(err);
-                  }
-                  if (res) {
+              bcrypt
+                .compare(req.body.wachtwoord, results[0].wachtwoord)
+                .then((match) => {
+                  if (match) {
                     // Send JWT
                     logger.info(
                       "passwords matched, sending userinfo en valid token."
@@ -123,6 +112,7 @@ let controller = {
                       jwtSecretKey,
                       { expiresIn: "25d" },
                       function (err, token) {
+                        if (err) throw err;
                         if (token) {
                           logger.info("User logged in, sending: ", userinfo);
                           res.status(200).json({
@@ -130,10 +120,10 @@ let controller = {
                             result: { ...userinfo, token },
                           });
                         }
+                        logger.debug("Logged in");
                       }
                     );
                   } else {
-                    // response is OutgoingMessage object that server response http request
                     logger.info("Password invalid");
                     res.status(401).json({
                       status: 401,
@@ -141,8 +131,7 @@ let controller = {
                       datetime: new Date().toISOString,
                     });
                   }
-                }
-              );
+                });
             } else {
               logger.info("User not found");
               res.status(404).json({
@@ -189,7 +178,7 @@ let controller = {
       next(error);
     }
   },
-  validateToken: (req, res, next) => {
+  validateTeacherToken: (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       logger.warn("Authorization header is missing!");
@@ -219,6 +208,32 @@ let controller = {
           logger.debug(payload.docentID);
           req.docentID = payload.docentID;
           next();
+        }
+      });
+    }
+  },
+  validateEmployeeToken: (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      logger.warn("Authorization header is missing!");
+      res.status(401).json({
+        status: 401,
+        message: "Authorization header is missing!",
+        datetime: new Date().toISOString,
+      });
+    } else {
+      const token = authHeader.substring(7, authHeader.length);
+      logger.debug(token);
+
+      jwt.verify(token, jwtSecretKey, (err, payload) => {
+        logger.debug(payload);
+        if (err) {
+          logger.warn(err.message);
+          res.status(401).json({
+            status: 401,
+            message: "Not authorized",
+            datetime: new Date().toISOString,
+          });
         }
         if (payload.medewerkerID) {
           logger.debug("token is valid", payload);
