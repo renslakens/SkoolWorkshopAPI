@@ -147,9 +147,42 @@ let controller = {
             });
         });
     },
+    getAllUsers: (req, res, next) => {
+        const { naam, isAccepted } = req.query;
+        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
+
+        let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=1`";
+
+        if (naam || isAccepted) {
+            queryString += " WHERE ";
+            if (naam) {
+                queryString += `naam LIKE '%${naam}%'`;
+            }
+            if (naam && isAccepted) {
+                queryString += " AND ";
+            }
+            if (isAccepted) {
+                queryString += `isAccepted='${isAccepted}'`;
+            }
+        }
+        logger.debug(queryString);
+
+        pool.query(queryString, function(error, results, fields) {
+
+            // Handle error after the release.
+            if (error) {
+                next(error);
+            }
+
+            // logger.debug("#results =", results.length);
+            res.status(200).json({
+                status: 200,
+                result: results,
+            });
+        });
+    },
     deleteUser: (req, res, next) => {
         const docentID = req.params.id;
-        let user;
         logger.debug(`User with ID ${docentID} requested to be deleted`);
 
         pool.query(
@@ -173,7 +206,6 @@ let controller = {
     },
     acceptUser: (req, res, next) => {
         const docentID = req.params.id;
-        let user;
         logger.debug(`User with ID ${docentID} requested to be updated`);
 
         pool.query(
