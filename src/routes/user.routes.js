@@ -8,8 +8,11 @@ router.post("/", userController.validateUser, userController.addUser);
 //Get all users
 router.get('/', userController.getAllUsers);
 
+// //Get all accepted profiles
+router.get('/profile', userController.getAllAcceptedUsers);
+
 // //Get route for profile
-// router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
+//router.get('/profile', authController.validateToken, userController.getUserProfile);
 
 // //Get routes for specific users
 // router.get('/:id', authController.validateToken, userController.validateId, userController.getUserById);

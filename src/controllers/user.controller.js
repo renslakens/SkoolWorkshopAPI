@@ -147,7 +147,7 @@ let controller = {
             });
         });
     },
-    getAllUsers: (req, res, next) => {
+    getAllAcceptedUsers: (req, res, next) => {
         const { naam, isAccepted } = req.query;
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
 
