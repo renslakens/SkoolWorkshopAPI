@@ -100,3 +100,10 @@ CREATE TABLE DocentInOpdracht (
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
     CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
 );
+
+CREATE TABLE `save_files` (
+	`id` int NOT NULL AUTO_INCREMENT,
+	`file` longblob NOT NULL,
+	`uploaded` datetime NOT NULL,
+	PRIMARY KEY (`id`)
+)

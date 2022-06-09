@@ -4,6 +4,7 @@ const logger = require("../config/config").logger;
 const jwt = require("jsonwebtoken");
 const jwtSecretKey = require("../config/config").jwtSecretKey;
 const bcrypt = require("bcrypt");
+const multer = require('multer');
 const saltRounds = 10;
 
 let controller = {
@@ -229,32 +230,17 @@ let controller = {
         )
     },
     uploadFile: (req, res, next) => {
-        let sampleFile;
-        let uploadPath;
+        var storage = multer.diskStorage({
+            destination: function(req, file, cb) {
+                cb(null, 'uploads')
+            },
 
-        if (!req.files || Object.keys(req.files).length === 0) {
-            res.status(400).json({
-                status: 400,
-                message: `No files uploaded`
-            })
-            return;
-        }
-
-        sampleFile = req.files.sampleFile;
-        uploadPath = __dirname + '/upload/' + sampleFile.name;
-        logger.debug(sampleFile);
-
-        sampleFile.mv(uploadPath, function(err) {
-            if (err) return res.status(500).json({
-                status: 500,
-                message: err
-            });
-
-            res.status(200).json({
-                status: 200,
-                message: `File uploaded!`
-            });
+            filename: function(req, file, cb) {
+                cb(null, new Date().toISOString() + file.originalname)
+            }
         });
+
+
     }
 };
 
