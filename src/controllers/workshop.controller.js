@@ -65,8 +65,8 @@ let controller = {
         workshop.naam,
         workshop.startTijd,
         workshop.eindTijd,
-        workshop.beschrjiving,
-        workshopoID,
+        workshop.beschrijving,
+        workshopID,
       ],
       function (error, result) {
         if (error) {
@@ -90,10 +90,18 @@ let controller = {
     )
   },
   getAllWorkshops: (req, res) => {
-    pool.query('GET opdrachtID, aantalDocente')
-    res.status(200).json({
-      status: 200,
-      result: database,
+    pool.query('SELECT * FROM Workshop;', function (error, result) {
+      if (error) {
+        res.status(400).json({
+          status: 400,
+          message: error,
+        })
+      }
+      res.status(200).json({
+        status: 200,
+        result: result,
+        message: 'Alle workshops zijn opgehaald',
+      })
     })
   },
 }

@@ -6,11 +6,11 @@ const aunthController = require("../controllers/auth.controller");
 //Add user
 router.post("/", userController.validateUser, userController.addUser);
 
-// //Get all users
-// router.get('/', authController.validateToken, userController.getAllUsers);
+//Get all users
+router.get('/', userController.getAllUsers);
 
 // //Get route for profile
-// router.get('/profile', authController.validateToken, userController.getUserProfile);
+// router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
 
 // //Get routes for specific users
 // router.get('/:id', authController.validateToken, userController.validateId, userController.getUserById);
