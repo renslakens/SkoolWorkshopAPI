@@ -98,27 +98,68 @@ let controller = {
     );
   },
   getJobs: (req, res) => {
-    let queryString = "SELECT W.naam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
-    pool.query( queryString, function (error, results, fields) {
-        if (error) {
-          res.status(400).json({
-            status: 400,
-            message: error,
-          });
-        }
-        if (results.length > 0) {
+    let queryString =
+      "SELECT W.naam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
+    pool.query(queryString, function (error, results, fields) {
+      if (error) {
+        res.status(400).json({
+          status: 400,
+          message: error,
+        });
+      }
+      if (results.length > 0) {
+        res.status(200).json({
+          status: 200,
+          result: results,
+          message: "Er zijn geen openstaande opdrachten",
+        });
+      }
+    });
+  },
+  acceptJob: (req, res) => {
+    let docentID = req.params.id;
+    pool.query(
+      "UPDATE DocentInOpdracht SET isBevestigd = ? WHERE docentID = ?",
+      [1, docentID],
+      function (error, result) {
+        if (error) throw error;
+
+        if (result.affectedRows > 0) {
           res.status(200).json({
             status: 200,
-            result: results,
+            message: `Docent is toegewezen aan de workshop`,
           });
         } else {
           res.status(400).json({
             status: 400,
-            message: "Er zijn geen openstaande opdrachten",
+            message: `Docent bestaat niet`,
           });
         }
       }
-    )
+    );
+  },
+  deleteTeacherFromJob: (req, res) => {
+    const docentID = req.params.id;
+
+    pool.query(
+      "DELETE FROM DocentInOpdracht WHERE docentID = ?",
+      [docentID],
+      function (error, result) {
+        if (error) throw error;
+
+        if (result.affectedRows > 0) {
+          res.status(200).json({
+            status: 200,
+            message: "Docent is van de opdracht verwijderd.",
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            message: `Docent bestaat niet`,
+          });
+        }
+      }
+    );
   },
   getJob: (req, res) => {
     const jobID = req.params.id;
