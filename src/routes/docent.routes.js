@@ -1,13 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const userController = require("../controllers/user.controller");
+const docentController = require("../controllers/docent.controller");
 const aunthController = require("../controllers/auth.controller");
 
 //Add user
-router.post("/", userController.validateUser, userController.addUser);
+router.post("/", docentController.validateDocent, docentController.addUser);
 
 //Get all users
-router.get('/', userController.getAllUsers);
+router.get('/', docentController.getAllUsers);
+
+// Put route for accepting a new docent
+router.put(
+  "/:id",
+  aunthController.validateEmployeeToken,
+  docentController.acceptUser
+);
 
 // //Get route for profile
 // router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
@@ -22,7 +29,7 @@ router.get('/', userController.getAllUsers);
 router.put(
   "/:id",
   aunthController.validateEmployeeToken,
-  userController.acceptUser
+  docentController.acceptUser
 );
 
 // //Delete routes for specific users
@@ -30,7 +37,7 @@ router.put(
 router.delete(
   "/:id",
   aunthController.validateEmployeeToken,
-  userController.deleteUser
+  docentController.deleteUser
 );
 
 module.exports = router;
