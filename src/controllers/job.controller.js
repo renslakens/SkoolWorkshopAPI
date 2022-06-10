@@ -98,6 +98,51 @@ let controller = {
     );
   },
   getJobs: (req, res) => {},
+  acceptJob: (req, res) => {
+    let docentID = req.params.id;
+    pool.query(
+      "UPDATE DocentInOpdracht SET isBevestigd = ? WHERE docentID = ?",
+      [1, docentID],
+      function (error, result) {
+        if (error) throw error;
+
+        if (result.affectedRows > 0) {
+          res.status(200).json({
+            status: 200,
+            message: `Docent is toegewezen aan de workshop`,
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            message: `Docent bestaat niet`,
+          });
+        }
+      }
+    );
+  },
+  deleteTeacherFromJob: (req, res) => {
+    const docentID = req.params.id;
+
+    pool.query(
+      "DELETE FROM DocentInOpdracht WHERE docentID = ?",
+      [docentID],
+      function (error, result) {
+        if (error) throw error;
+
+        if (result.affectedRows > 0) {
+          res.status(200).json({
+            status: 200,
+            message: "Docent is van de opdracht verwijderd.",
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            message: `Docent bestaat niet`,
+          });
+        }
+      }
+    );
+  },
 };
 
 module.exports = controller;
