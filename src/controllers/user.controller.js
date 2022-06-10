@@ -153,19 +153,25 @@ let controller = {
 
         let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=1`";
 
-        if (naam || isAccepted) {
-            queryString += " WHERE ";
-            if (naam) {
-                queryString += `naam LIKE '%${naam}%'`;
+        pool.query(queryString, function(error, results, fields) {
+
+            // Handle error after the release.
+            if (error) {
+                next(error);
             }
-            if (naam && isAccepted) {
-                queryString += " AND ";
-            }
-            if (isAccepted) {
-                queryString += `isAccepted='${isAccepted}'`;
-            }
-        }
-        logger.debug(queryString);
+
+            // logger.debug("#results =", results.length);
+            res.status(200).json({
+                status: 200,
+                result: results,
+            });
+        });
+    },
+    getAllUnacceptedUsers: (req, res, next) => {
+        const { naam, isAccepted } = req.query;
+        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
+
+        let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=0`";
 
         pool.query(queryString, function(error, results, fields) {
 
