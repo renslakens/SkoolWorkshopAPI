@@ -107,6 +107,23 @@ let controller = {
       })
     })
   },
+
+  getWorkshop: (req, res) => {
+    const docentID = req.params.id;
+    pool.query('SELECT * FROM Workshop WHERE workshopID = ?;',[docentID], function (error, result) {
+      if (error) {
+        res.status(400).json({
+          status: 400,
+          message: error,
+        })
+      }
+      res.status(200).json({
+        status: 200,
+        result: {...result},
+        message: 'De workshop is opgehaald',
+      })
+    })
+  },
 }
 
 module.exports = controller
