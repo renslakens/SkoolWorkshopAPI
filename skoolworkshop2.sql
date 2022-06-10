@@ -16,8 +16,8 @@ CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,
 	rol varchar(10) NOT NULL,
-	PRIMARY KEY (email)
-)
+	PRIMARY KEY (emailadres)
+);
 
 CREATE TABLE Docent (
 	docentID int NOT NULL AUTO_INCREMENT,
@@ -113,6 +113,3 @@ CREATE TABLE DocentInOpdracht (
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
     CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
 );
-
-INSERT INTO Opdracht
-VALUES ('Admin', 'Docent', 'Mediator', 'Stagair');
