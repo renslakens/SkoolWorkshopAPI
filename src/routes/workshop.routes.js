@@ -27,4 +27,5 @@ router.put(
 //get all workshops
 router.get('/', workshopController.getAllWorkshops)
 
+router.get('/:id', workshopController.getWorkshop)
 module.exports = router
