@@ -18,12 +18,12 @@ router.get('/', userController.getAllUsers);
 // //Put routes for specific users
 // router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
 
-// Put route for accepting a new docent
-router.put(
+//Put route for accepting a new docent
+/*router.put(
   "/:id",
   aunthController.validateEmployeeToken,
   userController.acceptUser
-);
+);*/
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
