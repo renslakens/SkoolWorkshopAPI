@@ -25,43 +25,42 @@ let controller = {
       assert(typeof naam === "string", "The naam must be a string");
       assert(typeof achternaam === "string", "The achternaam must be a string");
       if (postcode != undefined) {
-        assert(typeof postcode === 'string', 'The postalCode must be a string');
-
-    }
+        assert(typeof postcode === "string", "The postalCode must be a string");
+      }
       if (telefoonnummer != undefined) {
-          assert(typeof telefoonnummer === 'string', 'The phoneNumber must be a string');
-          assert(
-            telefoonnummer.match(
-                  /(06)(\s|\-|)\d{8}|31(\s6|\-6|6)\d{8}/
-              ),
-              'invalid phoneNumber'
-          )
+        assert(
+          typeof telefoonnummer === "string",
+          "The phoneNumber must be a string"
+        );
+        assert(
+          telefoonnummer.match(/(06)(\s|\-|)\d{8}|31(\s6|\-6|6)\d{8}/),
+          "invalid phoneNumber"
+        );
       }
       if (straat != undefined) {
-        assert(typeof straat === 'string', 'The straat must be a string');
-
-    }
-    if (huisnummer != undefined) {
-        assert(typeof huisnummer === 'string', 'The huisnummer must be a string');
-
-    }
-    if (plaats != undefined) {
-        assert(typeof plaats === 'string', 'The plaats must be a string');
-
-    
-    }
-    if (klantType != undefined) {
-        assert(typeof klantType === 'string', 'The klantType must be a string');
-
-    }
-    if (land != undefined) {
-        assert(typeof land === 'string', 'The land must be a string');
-
-    }
-    if (naamContactpersoon != undefined) {
-        assert(typeof naamContactpersoon === 'string', 'The naamContactpersoon must be a string');
-
-    }
+        assert(typeof straat === "string", "The straat must be a string");
+      }
+      if (huisnummer != undefined) {
+        assert(
+          typeof huisnummer === "string",
+          "The huisnummer must be a string"
+        );
+      }
+      if (plaats != undefined) {
+        assert(typeof plaats === "string", "The plaats must be a string");
+      }
+      if (klantType != undefined) {
+        assert(typeof klantType === "string", "The klantType must be a string");
+      }
+      if (land != undefined) {
+        assert(typeof land === "string", "The land must be a string");
+      }
+      if (naamContactpersoon != undefined) {
+        assert(
+          typeof naamContactpersoon === "string",
+          "The naamContactpersoon must be a string"
+        );
+      }
 
       next();
     } catch (err) {
@@ -94,9 +93,10 @@ let controller = {
     const customer = req.body;
 
     pool.query(
-      "INSERT INTO Klant (naam, achternaam, postcode, telefoonnummer, straat, huisnummer, plaats, klantType, land, naamContactpersoon) VALUES ?",
+      "INSERT INTO Klant (naam, achternaam, postcode, telefoonnummer, straat, huisnummer, plaats, klantType, land, naamContactpersoon) VALUES (?,?,?,?,?,?,?,?,?,?)",
       [
         customer.naam,
+        customer.achternaam,
         customer.postcode,
         customer.telefoonnummer,
         customer.straat,
@@ -191,9 +191,10 @@ let controller = {
     logger.debug(`customer with ID ${customerID} requested to be updated`);
 
     pool.query(
-      "Update Klant SET (naam, achternaam, postcode, telefoonnummer, straat, huisnummer, plaats, klantType, land, naamContactpersoon) WHERE KlantID = ?;",
+      "UPDATE Klant SET naam=?, achternaam=?, postcode=?, telefoonnummer=?, straat=?, huisnummer=?, plaats=?, klantType=?, land=?, naamContactpersoon=? WHERE KlantID = ?;",
       [
         customer.naam,
+        customer.achternaam,
         customer.postcode,
         customer.telefoonnummer,
         customer.straat,
@@ -202,7 +203,7 @@ let controller = {
         customer.klantType,
         customer.land,
         customer.naamContactpersoon,
-        customerID
+        customerID,
       ],
       function (error, results, fields) {
         if (error) {
@@ -213,16 +214,10 @@ let controller = {
           return;
         }
         if (results.affectedRows > 0) {
-          connection.query(
-            "SELECT * FROM Klant WHERE id = ?;",
-            [customerID],
-            function (error, results, fields) {
-              res.status(200).json({
-                status: 200,
-                result: results[0],
-              });
-            }
-          );
+          res.status(200).json({
+            status: 200,
+            message: "Klant is gewijzigd",
+          });
         } else {
           res.status(400).json({
             status: 400,
