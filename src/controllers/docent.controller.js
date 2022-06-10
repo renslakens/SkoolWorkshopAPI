@@ -8,23 +8,23 @@ const { rollback } = require("../../dbconnection");
 const saltRounds = 10;
 
 let controller = {
-    validateUser: (req, res, next) => {
+    validateDocent: (req, res, next) => {
         let user = req.body;
         let { naam, achternaam, emailadres, wachtwoord } = user;
         try {
-            //assert(typeof naam === "string", "The naam must be a string");
-            //assert(typeof achternaam === "string", "The achternaam must be a string");
+            assert(typeof naam === "string", "The naam must be a string");
+            assert(typeof achternaam === "string", "The achternaam must be a string");
             assert(typeof emailadres === "string", "The emailadres must be a string");
             assert(typeof wachtwoord === "string", "The wachtwoord must a string");
-            // assert(typeof nationality === 'string', 'The nationality must be a string');
-            // assert(typeof sex === 'string', 'The sex must be a string');
-            // assert(typeof birhtDate === 'string', 'The birthDate must be a string');
-            // assert(typeof birthCity === 'string', 'The birthCity must be a string');
-            // assert(typeof birthCountry === 'string', 'The birthCountry must be a string')
-            // assert(typeof street === 'string', 'The street must be a string');
-            // assert(typeof postalCode === 'string', 'The postalCode must be a string');
-            // assert(typeof city === 'string', 'The city must be a string');
-            // assert(typeof country === 'string', 'The country must be a string');
+            assert(typeof nationality === 'string', 'The nationality must be a string');
+            assert(typeof sex === 'string', 'The sex must be a string');
+            assert(typeof birhtDate === 'string', 'The birthDate must be a string');
+            assert(typeof birthCity === 'string', 'The birthCity must be a string');
+            assert(typeof birthCountry === 'string', 'The birthCountry must be a string')
+            assert(typeof street === 'string', 'The street must be a string');
+            assert(typeof postalCode === 'string', 'The postalCode must be a string');
+            assert(typeof city === 'string', 'The city must be a string');
+            assert(typeof country === 'string', 'The country must be a string');
 
             assert(
                 emailadres.match(
@@ -61,9 +61,9 @@ let controller = {
         }
     },
     validateId: (req, res, next) => {
-        const userId = req.params.id;
+        const docentId = req.params.id;
         try {
-            assert(Number.isInteger(parseInt(userId)), "ID must be a number");
+            assert(Number.isInteger(parseInt(docentId)), "ID must be a number");
             logger.debug("ValidateID is done")
             next();
         } catch (err) {
@@ -82,18 +82,12 @@ let controller = {
         achternaam = req.body.achternaam;
         emailadres = req.body.emailadres;
         wachtwoord = req.body.wachtwoord;
-        rol = req.body.rol;
 
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
             let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
             let values = [
-                [emailadres, hash, rol]
+                [naam, achternaam, emailadres]
             ];
-
-            if (err) {
-                logger.error('Could not encrypt password')
-                return next({ status: 500, message: 'Could not encrypt password' })
-            }
 
             pool.query(sql, [values], (dbError, result) => {
                 if (dbError) {
@@ -119,7 +113,7 @@ let controller = {
         const { naam, isAccepted } = req.query;
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
 
-        let queryString = "SELECT * FROM `medewerker`";
+        let queryString = "SELECT * FROM `Docent`";
 
         if (naam || isAccepted) {
             queryString += " WHERE ";
@@ -150,13 +144,13 @@ let controller = {
         });
     },
     deleteUser: (req, res, next) => {
-        const medewerkerID = req.params.id;
+        const docentID = req.params.id;
         let user;
-        logger.debug(`User with ID ${medewerkerID} requested to be deleted`);
+        logger.debug(`User with ID ${docentID} requested to be deleted`);
 
         pool.query(
             //TO DO --- also delete from login
-            "DELETE FROM docent WHERE medewerkerID = ?;", [medewerkerID],
+            "DELETE FROM docent WHERE docentID = ?;", [docentID],
             function(error, results, fields) {
                 if (error) throw error;
 
@@ -174,7 +168,6 @@ let controller = {
             }
         );
     },
-    /*
     acceptUser: (req, res, next) => {
         const docentID = req.params.id;
         let user;
@@ -198,14 +191,14 @@ let controller = {
                 }
             }
         )
-    },*/
+    },
     updateUser: (req, res, next) => {
-        const medewerkerID = req.params.id;
+        const docentID = req.params.id;
         const updateUser = req.body;
-        logger.debug(`User with ID ${medewerkerID} requested to be updated`);
+        logger.debug(`User with ID ${docentID} requested to be updated`);
 
         pool.query(
-            "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.emailadres, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, medewerkerID],
+            "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.emailadres, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, docentID],
             function(error, results, fields) {
                 if (error) {
                     res.status(401).json({
@@ -215,7 +208,7 @@ let controller = {
                     return;
                 }
                 if (results.affectedRows > 0) {
-                    connection.query('SELECT * FROM user WHERE id = ?;', [medewerkerID], function(error, results, fields) {
+                    connection.query('SELECT * FROM docent WHERE id = ?;', [docentID], function(error, results, fields) {
                         res.status(200).json({
                             status: 200,
                             result: results[0],
@@ -224,7 +217,7 @@ let controller = {
                 } else {
                     res.status(400).json({
                         status: 400,
-                        message: `Update failed, user with ID ${medewerkerID} does not exist`
+                        message: `Update failed, user with ID ${docentID} does not exist`
                     });
                 }
             }
