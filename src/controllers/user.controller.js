@@ -142,48 +142,7 @@ let controller = {
 
             // logger.debug("#results =", results.length);
             res.status(200).json({
-                status: 200,
-                result: results,
-            });
-        });
-    },
-    getAllAcceptedUsers: (req, res, next) => {
-        const { naam, isAccepted } = req.query;
-        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
-
-        let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=1`";
-
-        pool.query(queryString, function(error, results, fields) {
-
-            // Handle error after the release.
-            if (error) {
-                next(error);
-            }
-
-            // logger.debug("#results =", results.length);
-            res.status(200).json({
-                status: 200,
-                result: results,
-            });
-        });
-    },
-    getAllUnacceptedUsers: (req, res, next) => {
-        const { naam, isAccepted } = req.query;
-        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
-
-        let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=0`";
-
-        pool.query(queryString, function(error, results, fields) {
-
-            // Handle error after the release.
-            if (error) {
-                next(error);
-            }
-
-            // logger.debug("#results =", results.length);
-            res.status(200).json({
-                status: 200,
-                result: results,
+                results,
             });
         });
     },

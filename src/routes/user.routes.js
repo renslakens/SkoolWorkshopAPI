@@ -8,9 +8,6 @@ router.post("/", userController.validateUser, userController.addUser);
 //Get all users
 router.get('/', userController.getAllUsers);
 
-// //Get all accepted profiles
-router.get('/accepted', userController.getAllAcceptedUsers);
-
 // //Get route for profile
 //router.get('/profile', authController.validateToken, userController.getUserProfile);
 
