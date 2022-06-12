@@ -63,7 +63,7 @@ let controller = {
         const userId = req.params.id;
         try {
             assert(Number.isInteger(parseInt(userId)), "ID must be a number");
-            logger.debug("ValidateID is done")
+            logger.debug("ValidateID is done");
             next();
         } catch (err) {
             logger.debug(req.body);
@@ -81,16 +81,18 @@ let controller = {
         achternaam = req.body.achternaam;
         emailadres = req.body.emailadres;
         wachtwoord = req.body.wachtwoord;
+        soortmedewerker = req.body.soortmedewerker;
 
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-            let sql = "INSERT INTO docent (naam, achternaam, emailadres, wachtwoord) VALUES ?";
+            let sql =
+                "INSERT INTO medewerker (naam, achternaam, emailadres, wachtwoord, soortMedewerker) VALUES ?";
             let values = [
-                [naam, achternaam, emailadres, hash]
+                [naam, achternaam, emailadres, hash, soortmedewerker]
             ];
 
             if (err) {
-                logger.error('Could not encrypt password')
-                return next({ status: 500, message: 'Could not encrypt password' })
+                logger.error("Could not encrypt password");
+                return next({ status: 500, message: "Could not encrypt password" });
             }
 
             pool.query(sql, [values], (dbError, result) => {
@@ -134,7 +136,6 @@ let controller = {
         logger.debug(queryString);
 
         pool.query(queryString, function(error, results, fields) {
-
             // Handle error after the release.
             if (error) {
                 next(error);
@@ -142,7 +143,46 @@ let controller = {
 
             // logger.debug("#results =", results.length);
             res.status(200).json({
-                results,
+                status: 200,
+                result: results,
+            });
+        });
+    },
+    getAllAcceptedUsers: (req, res, next) => {
+        const { naam, isAccepted } = req.query;
+        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
+
+        let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=1`";
+
+        pool.query(queryString, function(error, results, fields) {
+            // Handle error after the release.
+            if (error) {
+                next(error);
+            }
+
+            // logger.debug("#results =", results.length);
+            res.status(200).json({
+                status: 200,
+                result: results,
+            });
+        });
+    },
+    getAllUnacceptedUsers: (req, res, next) => {
+        const { naam, isAccepted } = req.query;
+        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
+
+        let queryString = "SELECT * FROM `Docent` WHERE `isAccepted=0`";
+
+        pool.query(queryString, function(error, results, fields) {
+            // Handle error after the release.
+            if (error) {
+                next(error);
+            }
+
+            // logger.debug("#results =", results.length);
+            res.status(200).json({
+                status: 200,
+                result: results,
             });
         });
     },
@@ -190,7 +230,7 @@ let controller = {
                     });
                 }
             }
-        )
+        );
     },
     updateUser: (req, res, next) => {
         const docentID = req.params.id;
@@ -198,31 +238,51 @@ let controller = {
         logger.debug(`User with ID ${docentID} requested to be updated`);
 
         pool.query(
-            "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.emailadres, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, docentID],
+            "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [
+                updateUser.naam,
+                updateUser.achternaam,
+                updateUser.emailadres,
+                updateUser.geboortedatum,
+                updateUser.geboorteplaats,
+                updateUser.maxRijafstand,
+                updateUser.heeftRijbewijs,
+                updateUser.heeftAuto,
+                updateUser.straat,
+                updateUser.huisnummer,
+                updateUser.geslacht,
+                updateUser.nationaliteit,
+                updateUser.woonplaats,
+                updateUser.postcode,
+                updateUser.land,
+                docentID,
+            ],
             function(error, results, fields) {
                 if (error) {
                     res.status(401).json({
                         status: 401,
-                        message: `Update failed, provided email already taken`
-                    })
+                        message: `Update failed, provided email already taken`,
+                    });
                     return;
                 }
                 if (results.affectedRows > 0) {
-                    connection.query('SELECT * FROM user WHERE id = ?;', [docentID], function(error, results, fields) {
-                        res.status(200).json({
-                            status: 200,
-                            result: results[0],
-                        });
-                    });
+                    connection.query(
+                        "SELECT * FROM user WHERE id = ?;", [docentID],
+                        function(error, results, fields) {
+                            res.status(200).json({
+                                status: 200,
+                                result: results[0],
+                            });
+                        }
+                    );
                 } else {
                     res.status(400).json({
                         status: 400,
-                        message: `Update failed, user with ID ${docentID} does not exist`
+                        message: `Update failed, user with ID ${docentID} does not exist`,
                     });
                 }
             }
-        )
-    }
+        );
+    },
 };
 
 module.exports = controller;
