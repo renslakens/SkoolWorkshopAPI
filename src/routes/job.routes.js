@@ -3,7 +3,7 @@ const router = express.Router();
 const jobController = require("../controllers/job.controller");
 
 //Add job
-router.put("/", jobController.addJob);
+router.post("/", jobController.addJob);
 
 //Delete job
 router.delete("/:id", jobController.deleteJob);
