@@ -11,7 +11,7 @@ const userRoutes = require("./src/routes/user.routes");
 const authRoutes = require("./src/routes/auth.routes");
 const workshopRoutes = require("./src/routes/workshop.routes");
 const jobRoutes = require("./src/routes/job.routes");
-const customerRoutes = require("./src/routes/customer.routes");
+const docentRoutes = require("./src/routes/docent.routes")
 
 app.use(bodyParser.json());
 
@@ -45,9 +45,6 @@ app.use("/api/workshop", workshopRoutes);
 
 //Job route
 app.use("/api/job", jobRoutes);
-
-//Customer route
-app.use("/api/customer", customerRoutes);
 
 app.all("*", (req, res) => {
   res.status(401).json({
