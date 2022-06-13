@@ -279,6 +279,9 @@ let controller = {
         achternaam = req.body.achternaam;
 
 
+        
+
+
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
             let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
             let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
@@ -289,9 +292,7 @@ let controller = {
             let valuesMedewerker = [
                 [naam, achternaam, emailadres]
             ];
-            let valuesDocent = [
-                [naam, achternaam, /*geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker,*/ emailadres]
-            ];
+
 
             pool.query(sql, [valuesLogin], (dbError, result) => {
                 if (dbError) {
@@ -315,6 +316,25 @@ let controller = {
 
 
                 if (rol === "Docent") {
+
+                  geboortedatum = req.body.geboortedatum;
+                  geboorteplaats = req.body.geboorteplaats;
+                  maxRijafstand = req.body.maxRijafstand;
+                  heeftRijbewijs = req.body.heeftRijbewijs;
+                  heeftAuto = req.body.heeftAuto;
+                  straat = req.body.straat;
+                  huisnummer = req.body.huisnummer;
+                  geslacht = req.body.geslacht;
+                  woonplaats = req.body.woonplaats;
+                  postcode = req.body.postcode;
+                  land = req.body.land;
+                  isFlexwerker = req.body.isFlexwerker;
+                  //doelgroep = req.body.doelgroep;
+
+                  let valuesDocent = [
+                    [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, emailadres]
+                ];
+
                   pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
                       if (dbError) {
                           logger.debug(dbError.message);
