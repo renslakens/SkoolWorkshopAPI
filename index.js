@@ -11,7 +11,7 @@ const userRoutes = require("./src/routes/user.routes");
 const authRoutes = require("./src/routes/auth.routes");
 const workshopRoutes = require("./src/routes/workshop.routes");
 const jobRoutes = require("./src/routes/job.routes");
-const customerRoutes = require("./src/routes/customer.routes");
+const docentRoutes = require("./src/routes/docent.routes")
 
 app.use(bodyParser.json());
 
@@ -30,6 +30,9 @@ app.get("/", (req, res) => {
     result: "Skool Workshop API",
   });
 });
+
+//Docent route
+app.use("/api/docent", docentRoutes);
 
 //User route
 app.use("/api/user", userRoutes);
