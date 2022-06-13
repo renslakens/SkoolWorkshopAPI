@@ -14,12 +14,13 @@ router.put("/:id", jobController.updateJob);
 //Get all open jobs
 router.get("/", jobController.getJobs);
 
-router.post("/", jobController.addJob);
+//Teacher added to job
+router.post("/moderate:id", jobController.addTeacherToJob);
 
-//Delete job
-router.delete("/:id", jobController.deleteJob);
+//Accept job
+router.put("/moderate:id", jobController.acceptJob);
 
-//Update job
-router.put("/:id", jobController.updateJob);
+//Deny job
+router.delete("/moderate:id", jobController.deleteTeacherFromJob);
 
-router.get("/:id", jobController.getJob);
+module.exports = router;

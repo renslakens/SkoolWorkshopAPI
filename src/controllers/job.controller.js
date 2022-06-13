@@ -138,6 +138,29 @@ let controller = {
       }
     );
   },
+  addTeacherToJob: (req, res) => {
+    const docentOpdracht = req.body
+
+    pool.query(
+      "INSERT INTO Opdracht (docentID, opdrachtID) VALUES (?,?);",
+      [docentOpdracht.docentID, docentOpdracht.opdrachtID],
+      function (error, result) {
+        if (error) throw error;
+
+        if (result.affectedRows > 0) {
+          res.status(200).json({
+            status: 200,
+            message: "Docent is toegevoegd aan de opdracht",
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            message: `Docent bestaat niet`,
+          });
+        }
+      }
+    );
+  },
   deleteTeacherFromJob: (req, res) => {
     const docentID = req.params.id;
 
