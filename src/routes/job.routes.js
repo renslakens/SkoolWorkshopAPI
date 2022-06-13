@@ -15,7 +15,7 @@ router.put("/:id", jobController.updateJob);
 router.get("/", jobController.getJobs);
 
 //Teacher added to job
-router.post("/moderate:id", jobController.addTeacherToJob);
+router.post("/moderate", jobController.addTeacherToJob);
 
 //Accept job
 router.put("/moderate:id", jobController.acceptJob);
