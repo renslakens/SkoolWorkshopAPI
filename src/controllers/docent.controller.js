@@ -78,15 +78,14 @@ let controller = {
     },
     addUser: (req, res, next) => {
         const user = req.body;
-        naam = req.body.naam;
-        achternaam = req.body.achternaam;
         emailadres = req.body.emailadres;
         wachtwoord = req.body.wachtwoord;
+        rol = req.body.rol;
 
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
             let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
             let values = [
-                [naam, achternaam, emailadres]
+                [emailadres, hash, rol]
             ];
 
             pool.query(sql, [values], (dbError, result) => {
