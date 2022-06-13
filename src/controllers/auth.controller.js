@@ -16,8 +16,7 @@ let controller = {
     const { emailadres } = req.body;
     logger.debug(emailadres, " ", req.body.wachtwoord);
 
-    const queryString =
-      "SELECT docentID, naam, achternaam, emailadres, wachtwoord FROM Docent WHERE emailadres = ?";
+    const queryString = "SELECT emailadres, wachtwoord FROM Login WHERE emailadres = ?";
 
     pool.query(queryString, [emailadres], function (error, results, fields) {
       // Handle error after the release.
@@ -44,7 +43,7 @@ let controller = {
 
               const { password, ...userinfo } = results[0];
               const payload = {
-                docentID: userinfo.docentID,
+                emailadres: userinfo.emailadres,
               };
 
               logger.debug(payload);
@@ -74,74 +73,6 @@ let controller = {
               });
             }
           });
-      } else {
-        const queryString =
-          "SELECT medewerkerID, naam, achternaam, emailadres, wachtwoord FROM Medewerker WHERE emailadres = ?";
-        pool.query(
-          queryString,
-          [emailadres],
-          function (error, results, fields) {
-            if (error) {
-              logger.error("Error: ", err.toString());
-              res.status(500).json({
-                error: err.toString(),
-                datetime: new Date().toISOString(),
-              });
-            }
-            if (results && results.length === 1) {
-              // User found with this emailAddress
-              // Check if password's correct
-              bcrypt
-                .compare(req.body.wachtwoord, results[0].wachtwoord)
-                .then((match) => {
-                  if (match) {
-                    // Send JWT
-                    logger.info(
-                      "passwords matched, sending userinfo en valid token."
-                    );
-
-                    const { password, ...userinfo } = results[0];
-                    const payload = {
-                      docentID: userinfo.docentID,
-                    };
-
-                    logger.debug(payload);
-
-                    jwt.sign(
-                      payload,
-                      jwtSecretKey,
-                      { expiresIn: "25d" },
-                      function (err, token) {
-                        if (err) throw err;
-                        if (token) {
-                          logger.info("User logged in, sending: ", userinfo);
-                          res.status(200).json({
-                            status: 200,
-                            result: { ...userinfo, token },
-                          });
-                        }
-                        logger.debug("Logged in");
-                      }
-                    );
-                  } else {
-                    logger.info("Password invalid");
-                    res.status(401).json({
-                      status: 401,
-                      message: "Wachtwoord ongeldig.",
-                      datetime: new Date().toISOString,
-                    });
-                  }
-                });
-            } else {
-              logger.info("User not found");
-              res.status(404).json({
-                status: 404,
-                message: `Gebruiker met emailadres ${emailadres} niet gevonden.`,
-                datetime: new Date().toISOString,
-              });
-            }
-          }
-        );
       }
     });
   },
@@ -199,7 +130,30 @@ let controller = {
             status: 401,
             message: "Not authorized",
             datetime: new Date().toISOString,
-          });
+          })
+        } else {
+          const token = authHeader.substring(7, authHeader.length)
+          logger.debug(token)
+    
+          jwt.verify(token, jwtSecretKey, (err, payload) => {
+            logger.debug(payload)
+            if (err) {
+              logger.warn(err.message)
+              res.status(401).json({
+                status: 401,
+                message: 'Not authorized',
+                datetime: new Date().toISOString,
+              })
+            }
+            if (payload) {
+              logger.debug('token is valid', payload)
+              //User has acces. Add userId from payload to
+              //request, for every next endpoint
+              logger.debug(payload.emailadres)
+              req.emailadres = payload.emailadres
+              next()
+            }
+          })
         }
         if (payload.docentID) {
           logger.debug("token is valid", payload);

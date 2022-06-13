@@ -161,6 +161,30 @@ let controller = {
       }
     );
   },
+  getJob: (req, res) => {
+    const jobID = req.params.id;
+    let queryString = "SELECT W.naam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten ) WHERE opdrachtID =?;";
+    pool.query( queryString, [jobID], function (error, results, fields) {
+        if (error) {
+          res.status(400).json({
+            status: 400,
+            message: error,
+          });
+        }
+        if (results.length > 0) {
+          res.status(200).json({
+            status: 200,
+            result: results,
+          });
+        } else {
+          res.status(400).json({
+            status: 400,
+            message: "Er zijn geen openstaande opdrachten",
+          });
+        }
+      }
+    )
+  },
 };
 
 module.exports = controller;

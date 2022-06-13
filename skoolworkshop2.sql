@@ -8,38 +8,47 @@ DROP TABLE IF EXISTS Medewerker;
 DROP TABLE IF EXISTS Klant;
 DROP TABLE IF EXISTS Locatie;
 DROP TABLE IF EXISTS Workshop;
+DROP TABLE IF EXISTS Login;
+DROP TABLE IF EXISTS Rol;
+DROP TABLE IF EXISTS RolInLogin;
+
+CREATE TABLE Login (
+	emailadres varchar(50) NOT NULL,
+	wachtwoord varchar(60) NOT NULL,
+	rol varchar(10) NOT NULL,
+	PRIMARY KEY (emailadres)
+);
 
 CREATE TABLE Docent (
 	docentID int NOT NULL AUTO_INCREMENT,
 	naam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
-	emailadres varchar(25) NOT NULL UNIQUE,
-	geboortedatum date NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	geboorteplaats varchar(25) NOT NULL DEFAULT " ",
+	geboortedatum date NOT NULL,
+	geboorteplaats varchar(25) NOT NULL,
 	maxRijafstand int,
 	heeftRijbewijs boolean,
 	heeftAuto boolean,
-	straat varchar(25) NOT NULL DEFAULT " ",
-	huisnummer int NOT NULL DEFAULT 0,
-	geslacht varchar(5) NOT NULL DEFAULT " ",
-	nationaliteit varchar(15) NOT NULL DEFAULT " ",
-	woonplaats varchar(15) NOT NULL DEFAULT " ",
-	postcode varchar(8) NOT NULL DEFAULT " ",
-	land varchar(25) NOT NULL DEFAULT " ",
-	wachtwoord varchar(60) NOT NULL,
+	straat varchar(25) NOT NULL,
+	huisnummer int NOT NULL,
+	geslacht varchar(5) NOT NULL,
+	nationaliteit varchar(15) NOT NULL,
+	woonplaats varchar(15) NOT NULL,
+	postcode varchar(8) NOT NULL,
+	land varchar(25) NOT NULL,
 	isAccepted boolean DEFAULT FALSE,
 	isFlexwerker boolean,
-	PRIMARY KEY (docentID)
+	loginEmail varchar(50) NOT NULL,
+	PRIMARY KEY (docentID),
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres)
 );
 
 CREATE TABLE Medewerker (
 	medewerkerID int NOT NULL AUTO_INCREMENT,
 	naam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
-	emailadres varchar(25) NOT NULL UNIQUE,
-	wachtwoord varchar(60) NOT NULL,
-	soortMedewerker varchar(10) NOT NULL,
-	PRIMARY KEY (medewerkerID)
+	loginEmail varchar(50) NOT NULL,
+	PRIMARY KEY (medewerkerID),
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres)
 );
 
 CREATE TABLE Klant (
