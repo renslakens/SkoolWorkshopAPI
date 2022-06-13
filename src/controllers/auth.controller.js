@@ -282,7 +282,7 @@ let controller = {
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
             let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
             let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
-            let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
+            let sqlDocent = "INSERT INTO Docent (naam, achternaam, loginEmail) VALUES ?";
             let valuesLogin = [
                 [emailadres, hash, rol]
             ];
@@ -290,10 +290,10 @@ let controller = {
                 [naam, achternaam, emailadres]
             ];
             let valuesDocent = [
-                [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail]
+                [naam, achternaam, /*geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker,*/ emailadres]
             ];
 
-            pool.query(sql, [values], (dbError, result) => {
+            pool.query(sql, [valuesLogin], (dbError, result) => {
                 if (dbError) {
                     logger.debug(dbError.message);
                     const error = {
@@ -302,23 +302,23 @@ let controller = {
                         result: "User is niet toegevoegd in database",
                     };
                     next(error);
-                } else {
-                    logger.debug("InsertId is: ", result.insertId);
-                    res.status(201).json({
-                        status: 201,
-                        message: "User is toegevoegd in database",
-                        result: { id: result.insertId, ...user },
-                    });
-                }
+                } // } else {
+                //     logger.debug("InsertId is: ", result.insertId);
+                //     res.status(201).json({
+                //         status: 201,
+                //         message: "User is toegevoegd in database",
+                //         result: { id: result.insertId, ...user },
+                //     });
+                // }
             });
 
             if (rol === "Docent") {
-                pool.query(sqlDocent, [values], (dbError, result) => {
+                pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
                     if (dbError) {
                         logger.debug(dbError.message);
                         const error = {
                             status: 409,
-                            message: "User has not been added",
+                            message: "Teacher has not been added",
                             result: "User is niet toegevoegd in database",
                         };
                         next(error);
@@ -332,12 +332,12 @@ let controller = {
                     }
                 });
             } else {
-                pool.query(sqlMedewerker, [values], (dbError, result) => {
+                pool.query(sqlMedewerker, [valuesMedewerker], (dbError, result) => {
                     if (dbError) {
                         logger.debug(dbError.message);
                         const error = {
                             status: 409,
-                            message: "User has not been added",
+                            message: "Employee has not been added",
                             result: "User is niet toegevoegd in database",
                         };
                         next(error);
@@ -351,7 +351,6 @@ let controller = {
                     }
                 });
             }
-
         });
     },
 };
