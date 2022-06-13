@@ -11,9 +11,9 @@ router.get('/', docentController.getAllUsers);
 
 // Put route for accepting a new docent
 router.put(
-  "/:id",
-  aunthController.validateEmployeeToken,
-  docentController.acceptUser
+    "/:id",
+    //aunthController.validateEmployeeToken,
+    docentController.acceptUser
 );
 
 // //Get route for profile
@@ -27,17 +27,17 @@ router.put(
 
 // Put route for accepting a new docent
 router.put(
-  "/:id",
-  aunthController.validateEmployeeToken,
-  docentController.acceptUser
+    "/:id",
+    //aunthController.validateEmployeeToken,
+    docentController.acceptUser
 );
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
 router.delete(
-  "/:id",
-  aunthController.validateEmployeeToken,
-  docentController.deleteUser
+    "/:id",
+    //aunthController.validateEmployeeToken,
+    docentController.deleteUser
 );
 
 module.exports = router;

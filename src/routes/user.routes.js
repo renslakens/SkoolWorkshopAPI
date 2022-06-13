@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user.controller");
+const docentController = require("../controllers/docent.controller");
 const aunthController = require("../controllers/auth.controller");
 
 //Add user
@@ -18,21 +19,12 @@ router.get("/", userController.getAllUsers);
 // //Put routes for specific users
 // router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
 
-<<<<<<< HEAD
 // Put route for accepting a new docent
 router.put(
     "/:id",
-    aunthController.validateToken,
+    //aunthController.validateToken,
     userController.acceptUser
 );
-=======
-//Put route for accepting a new docent
-/*router.put(
-  "/:id",
-  aunthController.validateEmployeeToken,
-  userController.acceptUser
-);*/
->>>>>>> 9e4d2ef02481e083ac0a25dbfae3c4b1ee76af2a
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);

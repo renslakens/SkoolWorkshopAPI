@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS RolInLogin;
 CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,
-	rol varchar(10) NOT NULL,
+	rol varchar(10) NOT NULL DEFAULT "docent",
 	PRIMARY KEY (emailadres)
 );
 
