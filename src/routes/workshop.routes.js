@@ -5,23 +5,23 @@ const workshopController = require('../controllers/workshop.controller')
 
 //Add workshop
 router.post(
-  '/',
-  authController.validateEmployeeToken,
-  workshopController.addWorkshop,
+    '/',
+    authController.validateToken,
+    workshopController.addWorkshop,
 )
 
 //Delete workshop
 router.delete(
-  '/:id',
-  authController.validateEmployeeToken,
-  workshopController.deleteWorkshop,
+    '/:id',
+    authController.validateToken,
+    workshopController.deleteWorkshop,
 )
 
 //Update workshop
 router.put(
-  '/:id',
-  authController.validateEmployeeToken,
-  workshopController.updateWorkshop,
+    '/:id',
+    authController.validateToken,
+    workshopController.updateWorkshop,
 )
 
 //get all workshops

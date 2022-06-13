@@ -21,7 +21,7 @@ router.get("/", userController.getAllUsers);
 // Put route for accepting a new docent
 router.put(
     "/:id",
-    aunthController.validateEmployeeToken,
+    aunthController.validateToken,
     userController.acceptUser
 );
 
@@ -29,7 +29,7 @@ router.put(
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
 router.delete(
     "/:id",
-    aunthController.validateEmployeeToken,
+    // aunthController.validateToken,
     userController.deleteUser
 );
 
