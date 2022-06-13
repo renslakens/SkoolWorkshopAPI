@@ -8,10 +8,11 @@ const port = process.env.PORT;
 
 const dbconnection = require("./dbconnection");
 const userRoutes = require("./src/routes/employee.routes");
+const customerRoutes = require("./src/routes/customer.routes");
 const authRoutes = require("./src/routes/auth.routes");
 const workshopRoutes = require("./src/routes/workshop.routes");
 const jobRoutes = require("./src/routes/job.routes");
-const docentRoutes = require("./src/routes/docent.routes")
+const docentRoutes = require("./src/routes/docent.routes");
 
 app.use(bodyParser.json());
 
