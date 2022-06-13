@@ -16,15 +16,15 @@ let controller = {
             assert(typeof achternaam === "string", "The achternaam must be a string");
             assert(typeof emailadres === "string", "The emailadres must be a string");
             assert(typeof wachtwoord === "string", "The wachtwoord must a string");
-            assert(typeof nationality === 'string', 'The nationality must be a string');
-            assert(typeof sex === 'string', 'The sex must be a string');
-            assert(typeof birhtDate === 'string', 'The birthDate must be a string');
-            assert(typeof birthCity === 'string', 'The birthCity must be a string');
-            assert(typeof birthCountry === 'string', 'The birthCountry must be a string')
-            assert(typeof street === 'string', 'The street must be a string');
-            assert(typeof postalCode === 'string', 'The postalCode must be a string');
-            assert(typeof city === 'string', 'The city must be a string');
-            assert(typeof country === 'string', 'The country must be a string');
+            // assert(typeof nationality === 'string', 'The nationality must be a string');
+            // assert(typeof sex === 'string', 'The sex must be a string');
+            // assert(typeof birhtDate === 'string', 'The birthDate must be a string');
+            // assert(typeof birthCity === 'string', 'The birthCity must be a string');
+            // assert(typeof birthCountry === 'string', 'The birthCountry must be a string')
+            // assert(typeof street === 'string', 'The street must be a string');
+            // assert(typeof postalCode === 'string', 'The postalCode must be a string');
+            // assert(typeof city === 'string', 'The city must be a string');
+            // assert(typeof country === 'string', 'The country must be a string');
 
             assert(
                 emailadres.match(

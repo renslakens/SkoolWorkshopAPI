@@ -20,11 +20,11 @@ router.get("/", employeeController.getAllUsers);
 // router.put('/:id', authController.validateToken, employeeController.validateId, employeeController.validateUser, employeeController.updateUser);
 
 // Put route for accepting a new docent
-router.put(
-    "/:id",
-    //aunthController.validateToken,
-    employeeController.acceptUser
-);
+// router.put(
+//     "/:id",
+//     //aunthController.validateToken,
+//     employeeController.acceptUser
+// );
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, employeeController.validateId, employeeController.deleteUser);
