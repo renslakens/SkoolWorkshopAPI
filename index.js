@@ -7,7 +7,7 @@ require("dotenv").config();
 const port = process.env.PORT;
 
 const dbconnection = require("./dbconnection");
-const userRoutes = require("./src/routes/user.routes");
+const userRoutes = require("./src/routes/employee.routes");
 const authRoutes = require("./src/routes/auth.routes");
 const workshopRoutes = require("./src/routes/workshop.routes");
 const jobRoutes = require("./src/routes/job.routes");
