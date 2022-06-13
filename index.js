@@ -39,7 +39,7 @@ app.use("/api/docent", docentRoutes);
 app.use("/api/user", userRoutes);
 
 //Authentication route
-app.use("/api/auth/login", authRoutes);
+app.use("/api/auth/", authRoutes);
 
 //Workshop route
 app.use("/api/workshop", workshopRoutes);
