@@ -298,10 +298,11 @@ let controller = {
                     logger.debug(dbError.message);
                     const error = {
                         status: 409,
-                        message: "User has not been added",
+                        message: "User has not been added to login",
                         result: "User is niet toegevoegd in database",
                     };
                     next(error);
+                    return;
                 } // } else {
                 //     logger.debug("InsertId is: ", result.insertId);
                 //     res.status(201).json({
@@ -310,47 +311,55 @@ let controller = {
                 //         result: { id: result.insertId, ...user },
                 //     });
                 // }
+
+
+
+                if (rol === "Docent") {
+                  pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
+                      if (dbError) {
+                          logger.debug(dbError.message);
+                          const error = {
+                              status: 409,
+                              message: "Teacher has not been added",
+                              result: "User is niet toegevoegd in database",
+                          };
+                          next(error);
+                      } else {
+                          logger.debug("InsertId is: ", result.insertId);
+                          res.status(201).json({
+                              status: 201,
+                              message: "User is toegevoegd in database",
+                              result: { id: result.insertId, ...user },
+                          });
+                      }
+                  });
+              } else {
+                  pool.query(sqlMedewerker, [valuesMedewerker], (dbError, result) => {
+                      if (dbError) {
+                          logger.debug(dbError.message);
+                          const error = {
+                              status: 409,
+                              message: "Employee has not been added",
+                              result: "User is niet toegevoegd in database",
+                          };
+                          next(error);
+                      } else {
+                          logger.debug("InsertId is: ", result.insertId);
+                          res.status(201).json({
+                              status: 201,
+                              message: "User is toegevoegd in database",
+                              result: { id: result.insertId, ...user },
+                          });
+                      }
+                  });
+              }
+
+
+
+
             });
 
-            if (rol === "Docent") {
-                pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
-                    if (dbError) {
-                        logger.debug(dbError.message);
-                        const error = {
-                            status: 409,
-                            message: "Teacher has not been added",
-                            result: "User is niet toegevoegd in database",
-                        };
-                        next(error);
-                    } else {
-                        logger.debug("InsertId is: ", result.insertId);
-                        res.status(201).json({
-                            status: 201,
-                            message: "User is toegevoegd in database",
-                            result: { id: result.insertId, ...user },
-                        });
-                    }
-                });
-            } else {
-                pool.query(sqlMedewerker, [valuesMedewerker], (dbError, result) => {
-                    if (dbError) {
-                        logger.debug(dbError.message);
-                        const error = {
-                            status: 409,
-                            message: "Employee has not been added",
-                            result: "User is niet toegevoegd in database",
-                        };
-                        next(error);
-                    } else {
-                        logger.debug("InsertId is: ", result.insertId);
-                        res.status(201).json({
-                            status: 201,
-                            message: "User is toegevoegd in database",
-                            result: { id: result.insertId, ...user },
-                        });
-                    }
-                });
-            }
+
         });
     },
 };
