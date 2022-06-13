@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = require("../config/config").jwtSecretKey;
 const logger = require("../config/config").logger;
 const bcrypt = require("bcrypt");
+const saltRounds = 10;
 
 const emailRegex =
     /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -269,92 +270,90 @@ let controller = {
         }
     },
     register: (req, res, next) => {
-      const user = req.body;
-      emailadres = req.body.emailadres;
-      wachtwoord = req.body.wachtwoord;
-      rol = req.body.rol;
+        const user = req.body;
+        emailadres = req.body.emailadres;
+        wachtwoord = req.body.wachtwoord;
+        rol = req.body.rol;
 
-      naam = req.body.naam;
-      achternaam = req.body.achternaam;
+        naam = req.body.naam;
+        achternaam = req.body.achternaam;
 
 
-      bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-          let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
-          let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
-          let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
-          let valuesLogin = [
-              [emailadres, hash, rol]
-          ];
-          let valuesMedewerker = [
-            [naam, achternaam, emailadres]
-          ];
-          let valuesDocent = [
-            [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail]
-        ];
+        bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
+            let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
+            let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
+            let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
+            let valuesLogin = [
+                [emailadres, hash, rol]
+            ];
+            let valuesMedewerker = [
+                [naam, achternaam, emailadres]
+            ];
+            let valuesDocent = [
+                [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail]
+            ];
 
-          pool.query(sql, [values], (dbError, result) => {
-            if (dbError) {
-                logger.debug(dbError.message);
-                const error = {
-                    status: 409,
-                    message: "User has not been added",
-                    result: "User is niet toegevoegd in database",
-                };
-                next(error);
+            pool.query(sql, [values], (dbError, result) => {
+                if (dbError) {
+                    logger.debug(dbError.message);
+                    const error = {
+                        status: 409,
+                        message: "User has not been added",
+                        result: "User is niet toegevoegd in database",
+                    };
+                    next(error);
+                } else {
+                    logger.debug("InsertId is: ", result.insertId);
+                    res.status(201).json({
+                        status: 201,
+                        message: "User is toegevoegd in database",
+                        result: { id: result.insertId, ...user },
+                    });
+                }
+            });
+
+            if (rol === "Docent") {
+                pool.query(sqlDocent, [values], (dbError, result) => {
+                    if (dbError) {
+                        logger.debug(dbError.message);
+                        const error = {
+                            status: 409,
+                            message: "User has not been added",
+                            result: "User is niet toegevoegd in database",
+                        };
+                        next(error);
+                    } else {
+                        logger.debug("InsertId is: ", result.insertId);
+                        res.status(201).json({
+                            status: 201,
+                            message: "User is toegevoegd in database",
+                            result: { id: result.insertId, ...user },
+                        });
+                    }
+                });
             } else {
-                logger.debug("InsertId is: ", result.insertId);
-                res.status(201).json({
-                    status: 201,
-                    message: "User is toegevoegd in database",
-                    result: { id: result.insertId, ...user },
+                pool.query(sqlMedewerker, [values], (dbError, result) => {
+                    if (dbError) {
+                        logger.debug(dbError.message);
+                        const error = {
+                            status: 409,
+                            message: "User has not been added",
+                            result: "User is niet toegevoegd in database",
+                        };
+                        next(error);
+                    } else {
+                        logger.debug("InsertId is: ", result.insertId);
+                        res.status(201).json({
+                            status: 201,
+                            message: "User is toegevoegd in database",
+                            result: { id: result.insertId, ...user },
+                        });
+                    }
                 });
             }
+
         });
-
-          if (rol === "Docent"){
-            pool.query(sqlDocent, [values], (dbError, result) => {
-              if (dbError) {
-                  logger.debug(dbError.message);
-                  const error = {
-                      status: 409,
-                      message: "User has not been added",
-                      result: "User is niet toegevoegd in database",
-                  };
-                  next(error);
-              } else {
-                  logger.debug("InsertId is: ", result.insertId);
-                  res.status(201).json({
-                      status: 201,
-                      message: "User is toegevoegd in database",
-                      result: { id: result.insertId, ...user },
-                  });
-              }
-          });
-          }
-          
-          else {
-            pool.query(sqlMedewerker, [values], (dbError, result) => {
-              if (dbError) {
-                  logger.debug(dbError.message);
-                  const error = {
-                      status: 409,
-                      message: "User has not been added",
-                      result: "User is niet toegevoegd in database",
-                  };
-                  next(error);
-              } else {
-                  logger.debug("InsertId is: ", result.insertId);
-                  res.status(201).json({
-                      status: 201,
-                      message: "User is toegevoegd in database",
-                      result: { id: result.insertId, ...user },
-                  });
-              }
-          });
-          }
-
-      });
-  },
+    },
 };
 
 module.exports = controller;
