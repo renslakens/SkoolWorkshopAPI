@@ -285,7 +285,7 @@ let controller = {
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
             let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
             let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
-            let sqlDocent = "INSERT INTO Docent (naam, achternaam, loginEmail) VALUES ?";
+            let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
             let valuesLogin = [
                 [emailadres, hash, rol]
             ];
