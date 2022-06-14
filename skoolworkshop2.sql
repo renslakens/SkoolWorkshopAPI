@@ -1,16 +1,15 @@
 USE skoolworkshop2;
 
-DROP TABLE IF EXISTS DocentInOpdracht;
-DROP TABLE IF EXISTS Doelgroep;
-DROP TABLE IF EXISTS Opdracht;
-DROP TABLE IF EXISTS Docent;
 DROP TABLE IF EXISTS Medewerker;
+DROP TABLE IF EXISTS DocentInOpdracht;
+DROP TABLE IF EXISTS WorkshopDocent;
+DROP TABLE IF EXISTS Docent;
+DROP TABLE IF EXISTS Opdracht;
 DROP TABLE IF EXISTS Klant;
 DROP TABLE IF EXISTS Locatie;
+DROP TABLE IF EXISTS Doelgroep;
 DROP TABLE IF EXISTS Workshop;
 DROP TABLE IF EXISTS Login;
-DROP TABLE IF EXISTS Rol;
-DROP TABLE IF EXISTS RolInLogin;
 
 CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
@@ -40,7 +39,7 @@ CREATE TABLE Docent (
 	loginEmail varchar(50) NOT NULL,
 	doelgroep varchar(15) NOT NULL,
 	PRIMARY KEY (docentID),
-	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres)
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE
 );
 
 CREATE TABLE Medewerker (
@@ -121,5 +120,5 @@ CREATE TABLE DocentInOpdracht (
 	opdrachtID int,
 	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
-    CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
+	CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
 );
