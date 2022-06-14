@@ -13,6 +13,7 @@ const authRoutes = require("./src/routes/auth.routes");
 const workshopRoutes = require("./src/routes/workshop.routes");
 const jobRoutes = require("./src/routes/job.routes");
 const docentRoutes = require("./src/routes/docent.routes");
+const taRoutes = require("./src/routes/ta.routes");
 
 app.use(bodyParser.json());
 
@@ -49,6 +50,9 @@ app.use("/api/job", jobRoutes);
 
 //Customer route
 app.use("/api/customer", customerRoutes);
+
+//target audience route
+app.use("/api/ta", taRoutes);
 
 app.all("*", (req, res) => {
     res.status(401).json({

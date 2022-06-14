@@ -73,7 +73,7 @@ CREATE TABLE Locatie (
 	land varchar(25) NOT NULL,
 	postcode varchar(8),
 	straat varchar(25),
-	huisnummer int,
+	huisnummer varchar(5) NOT NULL,
 	plaats varchar(25) NOT NULL,
 	PRIMARY KEY (locatieID)
 );
@@ -85,6 +85,11 @@ CREATE TABLE Workshop (
 	PRIMARY KEY (workshopID)
 );
 
+CREATE TABLE Doelgroep (
+	doelgroepID int NOT NULL AUTO_INCREMENT,
+	doelgroep varchar(25) NOT NULL
+);
+
 CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
 	aantalDocenten int,
@@ -93,14 +98,16 @@ CREATE TABLE Opdracht (
 	eindTijd datetime,
 	locatieID int,
 	workshopID int,
-	klantID int
+	klantID int,
+	doelgroepID int,
 	PRIMARY KEY (opdrachtID),
 	FOREIGN KEY (locatieID) REFERENCES Locatie(locatieID),
 	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID),
-	FOREIGN KEY (klantID) REFERENCES Klant(KlantID)
+	FOREIGN KEY (klantID) REFERENCES Klant(KlantID),
+	FOREIGN KEY (doelgroepID) REFERENCES Doelgroep(doelgroepID)
 );
 
-CREATE TABLE Doelgroep (
+CREATE TABLE WorkshopDocent (
 	docentID int,
 	workshopID int,
 	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
