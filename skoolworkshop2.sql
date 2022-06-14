@@ -87,7 +87,8 @@ CREATE TABLE Workshop (
 
 CREATE TABLE Doelgroep (
 	doelgroepID int NOT NULL AUTO_INCREMENT,
-	doelgroep varchar(25) NOT NULL
+	doelgroep varchar(25) NOT NULL,
+	PRIMARY KEY (doelgroepID)
 );
 
 CREATE TABLE Opdracht (
