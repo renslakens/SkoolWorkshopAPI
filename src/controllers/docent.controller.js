@@ -142,6 +142,22 @@ let controller = {
             });
         });
     },
+    getDocent: (req, res) => {
+        const docentID = req.params.id;
+        pool.query('SELECT * FROM docent WHERE docentID = ?;',[docentID], function (error, result) {
+          if (error) {
+            res.status(400).json({
+              status: 400,
+              message: error,
+            })
+          }
+          res.status(200).json({
+            status: 200,
+            result: {...result},
+            message: 'De docent is opgehaald',
+          })
+        })
+      },
     deleteUser: (req, res, next) => {
         const docentID = req.params.id;
         let user;

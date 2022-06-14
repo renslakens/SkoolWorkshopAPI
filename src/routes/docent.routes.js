@@ -19,8 +19,8 @@ router.put(
 // //Get route for profile
 // router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
 
-// //Get routes for specific users
-// router.get('/:id', authController.validateToken, userController.validateId, userController.getUserById);
+//Get routes for specific users
+router.get('/:id', docentController.validateId, docentController.getDocent);
 
 // //Put routes for specific users
 // router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
