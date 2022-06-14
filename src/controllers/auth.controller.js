@@ -325,6 +325,7 @@ let controller = {
                   straat = req.body.straat;
                   huisnummer = req.body.huisnummer;
                   geslacht = req.body.geslacht;
+                  nationaliteit = req.body.nationaliteit;
                   woonplaats = req.body.woonplaats;
                   postcode = req.body.postcode;
                   land = req.body.land;
