@@ -383,6 +383,30 @@ let controller = {
 
         });
     },
+    deleteUser: (req, res, next) => {
+        const userEmail = req.params.id;
+        let user;
+        logger.debug(`User with email ${userEmail} requested to be deleted`);
+
+        pool.query(
+            "DELETE FROM login WHERE emailadres = ?;", [userEmail],
+            function(error, results, fields) {
+                if (error) throw error;
+
+                if (results.affectedRows > 0) {
+                    res.status(200).json({
+                        status: 200,
+                        message: `User with email ${userEmail} succesfully deleted`,
+                    });
+                } else {
+                    res.status(400).json({
+                        status: 400,
+                        message: `User does not exist`,
+                    });
+                }
+            }
+        );
+    },
 };
 
 module.exports = controller;

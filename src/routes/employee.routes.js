@@ -28,10 +28,10 @@ router.get("/", employeeController.getAllUsers);
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, employeeController.validateId, employeeController.deleteUser);
-router.delete(
-    "/:id",
-    // aunthController.validateToken,
-    employeeController.deleteUser
-);
+// router.delete(
+//     "/:id",
+//     // aunthController.validateToken,
+//     employeeController.deleteUser
+// );
 
 module.exports = router;
