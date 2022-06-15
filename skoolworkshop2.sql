@@ -49,7 +49,7 @@ CREATE TABLE Medewerker (
 	achternaam varchar(25) NOT NULL,
 	loginEmail varchar(50) NOT NULL,
 	PRIMARY KEY (medewerkerID),
-	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Klant (
