@@ -11,6 +11,8 @@ DROP TABLE IF EXISTS Doelgroep;
 DROP TABLE IF EXISTS Workshop;
 DROP TABLE IF EXISTS Login;
 
+SET FOREIGN_KEY_CHECKS=0;
+
 CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,
@@ -122,3 +124,5 @@ CREATE TABLE DocentInOpdracht (
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
 	CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
 );
+
+SET FOREIGN_KEY_CHECKS=1;
