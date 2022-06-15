@@ -19,6 +19,7 @@ CREATE TABLE Login (
 );
 
 CREATE TABLE Docent (
+	salaris int,
 	docentID int NOT NULL AUTO_INCREMENT,
 	naam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
@@ -39,7 +40,7 @@ CREATE TABLE Docent (
 	loginEmail varchar(50) NOT NULL,
 	doelgroep varchar(15) NOT NULL,
 	PRIMARY KEY (docentID),
-	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Medewerker (

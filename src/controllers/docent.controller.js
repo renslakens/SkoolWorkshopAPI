@@ -189,7 +189,7 @@ let controller = {
         logger.debug(`User with ID ${docentID} requested to be updated`);
 
         pool.query(
-            "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.emailadres, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, docentID],
+            "Update docent SET naam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, salaris = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, updateUser.salaris, docentID],
             function(error, results, fields) {
                 if (error) {
                     res.status(401).json({

@@ -119,7 +119,7 @@ let controller = {
         const { naam, isAccepted } = req.query;
         logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
 
-        let queryString = "SELECT * FROM `medewerker`";
+        let queryString = "SELECT * FROM `login`";
 
         if (naam || isAccepted) {
             queryString += " WHERE ";

@@ -8,4 +8,6 @@ router.post("/register", authController.register);
 
 router.post("/delete", authController.deleteUser);
 
+router.post("/email", authController.updateMail);
+
 module.exports = router;
