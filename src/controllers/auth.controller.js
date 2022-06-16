@@ -428,6 +428,40 @@ let controller = {
             }
         )
     },
+    getAllUsers: (req, res, next) => {
+        const { naam, isAccepted } = req.query;
+        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
+
+        let queryString = "SELECT * FROM `Login`";
+
+        if (naam || isAccepted) {
+            queryString += " WHERE ";
+            if (naam) {
+                queryString += `naam LIKE '%${naam}%'`;
+            }
+            if (naam && isAccepted) {
+                queryString += " AND ";
+            }
+            if (isAccepted) {
+                queryString += `isAccepted='${isAccepted}'`;
+            }
+        }
+        logger.debug(queryString);
+
+        pool.query(queryString, function(error, results, fields) {
+
+            // Handle error after the release.
+            if (error) {
+                next(error);
+            }
+
+            // logger.debug("#results =", results.length);
+            res.status(200).json({
+                status: 200,
+                result: results,
+            });
+        });
+    },
 };
 
 module.exports = controller;
