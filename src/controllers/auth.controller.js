@@ -12,22 +12,23 @@ const passwordRegex =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
 let controller = {
-    login: (req, res, next) => {
-        //Assert for validation
-        const { emailadres } = req.body;
-        logger.debug(emailadres, req.body.wachtwoord);
+  login: (req, res, next) => {
+    //Assert for validation
+    const {emailadres} = req.body;
+    logger.debug(emailadres, req.body.wachtwoord);
 
-        const queryString = pool.query(
-            queryString, [emailadres],
-            function(error, results, fields) {
-                // Handle error after the release.
-                if (error) {
-                    logger.error("Error: ", error.toString());
-                    res.status(500).json({
-                        error: error.toString(),
-                        datetime: new Date().toISOString(),
-                    });
-                }
+    pool.query(
+      queryString,
+      [emailadres],
+      function (error, results, fields) {
+        // Handle error after the release.
+        if (error) {
+          logger.error("Error: ", error.toString());
+          res.status(500).json({
+            error: error.toString(),
+            datetime: new Date().toISOString(),
+          });
+        }
 
                 if (results && results.length === 1) {
                     logger.debug(results[0].wachtwoord);
