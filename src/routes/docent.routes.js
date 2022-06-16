@@ -11,7 +11,7 @@ router.get('/', docentController.getAllUsers);
 
 // Put route for updating a new docent
 router.put(
-    "/update/:id",
+    "/:id",
     //aunthController.validateEmployeeToken,
     docentController.updateDocent
 );
@@ -35,11 +35,11 @@ router.get('/:id', docentController.validateId, docentController.getDocent);
 
 
 // Put route for accepting a new docent
-router.put(
-    "/:id",
-    //aunthController.validateEmployeeToken,
-    docentController.acceptUser
-);
+// router.put(
+//     "/:id",
+//     //aunthController.validateEmployeeToken,
+//     docentController.acceptUser
+// );
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
