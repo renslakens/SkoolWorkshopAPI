@@ -8,4 +8,11 @@ router.post("/register", authController.register);
 
 router.post("/delete", authController.deleteUser);
 
+// Put route for accepting a new user
+router.put(
+    "/:id",
+    //aunthController.validateEmployeeToken,
+    authController.acceptUser
+);
+
 module.exports = router;

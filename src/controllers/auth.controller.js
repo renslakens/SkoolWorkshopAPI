@@ -15,16 +15,16 @@ let controller = {
     login: (req, res, next) => {
         //Assert for validation
         const { emailadres } = req.body;
-        logger.debug(emailadres, " ", req.body.wachtwoord);
+        logger.debug(emailadres, req.body.wachtwoord);
 
         const queryString = "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
 
         pool.query(queryString, [emailadres], function(error, results, fields) {
             // Handle error after the release.
             if (error) {
-                logger.error("Error: ", err.toString());
+                logger.error("Error: ", error.toString());
                 res.status(500).json({
-                    error: err.toString(),
+                    error: error.toString(),
                     datetime: new Date().toISOString(),
                 });
             }
