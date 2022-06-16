@@ -345,7 +345,6 @@ let controller = {
             }
         );
     },
-
     acceptUser: (req, res, next) => {
         const emailadres = req.params.emailadres;
         let user;
