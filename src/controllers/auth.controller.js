@@ -17,7 +17,7 @@ let controller = {
         const { emailadres } = req.body;
         logger.debug(emailadres, " ", req.body.wachtwoord);
 
-        const queryString = "SELECT emailadres, wachtwoord, rol FROM Login WHERE emailadres = ?";
+        const queryString = "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
 
         pool.query(queryString, [emailadres], function(error, results, fields) {
             // Handle error after the release.
@@ -278,16 +278,12 @@ let controller = {
         naam = req.body.naam;
         achternaam = req.body.achternaam;
 
-
-
-
-
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-            let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
+            let sql = "INSERT INTO login (emailadres, wachtwoord, rol, isAccepted) VALUES ?";
             let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
             let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
             let valuesLogin = [
-                [emailadres, hash, rol]
+                [emailadres, hash, rol, 0]
             ];
             let valuesMedewerker = [
                 [naam, achternaam, emailadres]
@@ -406,6 +402,31 @@ let controller = {
                 }
             }
         );
+    },
+
+    acceptUser: (req, res, next) => {
+        const emailadres = req.params.emailadres;
+        let user;
+        logger.debug(`User with emailadres ${emailadres} requested to be updated`);
+
+        pool.query(
+            "UPDATE login SET isAccepted = ? WHERE emailadres = ?;", [1, emailadres],
+            function(error, results, fields) {
+                if (error) throw error;
+
+                if (results.affectedRows > 0) {
+                    res.status(200).json({
+                        status: 200,
+                        message: `User with emailadres ${emailadres} succesfully updated`,
+                    });
+                } else {
+                    res.status(400).json({
+                        status: 400,
+                        message: `User does not exist`,
+                    });
+                }
+            }
+        )
     },
 };
 

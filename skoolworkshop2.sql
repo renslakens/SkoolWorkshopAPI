@@ -17,6 +17,7 @@ CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,
 	rol varchar(10) NOT NULL DEFAULT "Docent",
+	isAccepted boolean DEFAULT FALSE,
 	PRIMARY KEY (emailadres)
 );
 
@@ -36,12 +37,11 @@ CREATE TABLE Docent (
 	woonplaats varchar(15) NOT NULL,
 	postcode varchar(8) NOT NULL,
 	land varchar(25) NOT NULL,
-	isAccepted boolean DEFAULT FALSE,
 	isFlexwerker boolean,
 	loginEmail varchar(50) NOT NULL,
 	doelgroep varchar(15) NOT NULL,
 	PRIMARY KEY (docentID),
-	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Medewerker (
@@ -50,7 +50,7 @@ CREATE TABLE Medewerker (
 	achternaam varchar(25) NOT NULL,
 	loginEmail varchar(50) NOT NULL,
 	PRIMARY KEY (medewerkerID),
-	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE
+	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Klant (
