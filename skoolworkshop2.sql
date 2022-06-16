@@ -1,5 +1,7 @@
 USE skoolworkshop2;
 
+SET FOREIGN_KEY_CHECKS=0;
+
 DROP TABLE IF EXISTS Medewerker;
 DROP TABLE IF EXISTS DocentInOpdracht;
 DROP TABLE IF EXISTS WorkshopDocent;
@@ -11,7 +13,7 @@ DROP TABLE IF EXISTS Doelgroep;
 DROP TABLE IF EXISTS Workshop;
 DROP TABLE IF EXISTS Login;
 
-SET FOREIGN_KEY_CHECKS=0;
+
 
 CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
