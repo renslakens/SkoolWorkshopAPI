@@ -147,60 +147,57 @@ let controller = {
         }
     },
     updateMail: (req, res, next) => {
-      const body = req.body;
-      const email = body.emailadres;
-      const newMail = body.newEmailadres;
-  
-      pool.query(
-        "SELECT emailadres FROM login WHERE emailadres = ?",
-        [email],
-        function (error, results, fields) {
-          // Handle error after the release.
-          if (error) {
-            logger.error("Error: ", err.toString());
-            res.status(500).json({
-              error: err.toString(),
-              datetime: new Date().toISOString(),
-            });
-          }
-          logger.debug(results.length);
-          if (results.length > 0 ) {
-              logger.debug(results[0]);
-            {
-              logger.debug(newMail);
-              pool.query(
-                "UPDATE login SET emailadres = ? WHERE emailadres = ?",
-                [newMail, email],
-                (dbError, result) => {
-                  if (dbError) {
-                    logger.debug(dbError.message);
+        const body = req.body;
+        const email = body.emailadres;
+        const newMail = body.newEmailadres;
+
+        pool.query(
+            "SELECT emailadres FROM login WHERE emailadres = ?", [email],
+            function(error, results, fields) {
+                // Handle error after the release.
+                if (error) {
+                    logger.error("Error: ", err.toString());
+                    res.status(500).json({
+                        error: err.toString(),
+                        datetime: new Date().toISOString(),
+                    });
+                }
+                logger.debug(results.length);
+                if (results.length > 0) {
+                    logger.debug(results[0]); {
+                        logger.debug(newMail);
+                        pool.query(
+                            "UPDATE login SET emailadres = ? WHERE emailadres = ?", [newMail, email],
+                            (dbError, result) => {
+                                if (dbError) {
+                                    logger.debug(dbError.message);
+                                    const error = {
+                                        status: 409,
+                                        message: "User has not been added",
+                                        result: "User is niet toegevoegd in database",
+                                    };
+                                    next(error);
+                                } else {
+                                    logger.debug("InsertId is: ", result.insertId);
+                                    res.status(201).json({
+                                        status: 201,
+                                        message: "Email adres is veranderd",
+                                        result: { newMail },
+                                    });
+                                }
+                            }
+                        );
+                    }
+                } else {
                     const error = {
-                      status: 409,
-                      message: "User has not been added",
-                      result: "User is niet toegevoegd in database",
+                        status: 409,
+                        message: "Email niet gevonden",
                     };
                     next(error);
-                  } else {
-                    logger.debug("InsertId is: ", result.insertId);
-                    res.status(201).json({
-                      status: 201,
-                      message: "Email adres is veranderd",
-                      result: { newMail },
-                    });
-                  }
                 }
-              );
             }
-          } else{
-              const error = {
-                status: 409,
-                message: "Email niet gevonden",
-              };
-              next(error);
-          }
-        }
-      );
-    },  
+        );
+    },
     register: (req, res, next) => {
         const user = req.body;
         emailadres = req.body.emailadres;
