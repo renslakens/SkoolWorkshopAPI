@@ -17,64 +17,65 @@ let controller = {
         const { emailadres } = req.body;
         logger.debug(emailadres, req.body.wachtwoord);
 
-        const queryString = "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
-
-        pool.query(queryString, [emailadres], function(error, results, fields) {
-            // Handle error after the release.
-            if (error) {
-                logger.error("Error: ", error.toString());
-                res.status(500).json({
-                    error: error.toString(),
-                    datetime: new Date().toISOString(),
-                });
-            }
-
-            if (results && results.length === 1) {
-                logger.debug(results[0].wachtwoord);
-                // User found with this emailaddress
-                // Check if password's correct
-                bcrypt
-                    .compare(req.body.wachtwoord, results[0].wachtwoord)
-                    .then((match) => {
-                        if (match) {
-                            // Send JWT
-                            logger.info(
-                                "passwords matched, sending userinfo en valid token."
-                            );
-
-                            const { password, ...userinfo } = results[0];
-                            const payload = {
-                                emailadres: userinfo.emailadres,
-                            };
-
-                            logger.debug(payload);
-
-                            jwt.sign(
-                                payload,
-                                jwtSecretKey, { expiresIn: "25d" },
-                                function(err, token) {
-                                    if (err) throw err;
-                                    if (token) {
-                                        logger.info("User logged in, sending: ", userinfo);
-                                        res.status(200).json({
-                                            status: 200,
-                                            result: {...userinfo, token },
-                                        });
-                                    }
-                                    logger.debug("Logged in");
-                                }
-                            );
-                        } else {
-                            logger.info("Password invalid");
-                            res.status(401).json({
-                                status: 401,
-                                message: "Wachtwoord ongeldig.",
-                                datetime: new Date().toISOString,
-                            });
-                        }
+        const queryString = pool.query(
+            queryString, [emailadres],
+            function(error, results, fields) {
+                // Handle error after the release.
+                if (error) {
+                    logger.error("Error: ", error.toString());
+                    res.status(500).json({
+                        error: error.toString(),
+                        datetime: new Date().toISOString(),
                     });
+                }
+
+                if (results && results.length === 1) {
+                    logger.debug(results[0].wachtwoord);
+                    // User found with this emailaddress
+                    // Check if password's correct
+                    bcrypt
+                        .compare(req.body.wachtwoord, results[0].wachtwoord)
+                        .then((match) => {
+                            if (match) {
+                                // Send JWT
+                                logger.info(
+                                    "passwords matched, sending userinfo en valid token."
+                                );
+
+                                const { password, ...userinfo } = results[0];
+                                const payload = {
+                                    emailadres: userinfo.emailadres,
+                                };
+
+                                logger.debug(payload);
+
+                                jwt.sign(
+                                    payload,
+                                    jwtSecretKey, { expiresIn: "25d" },
+                                    function(err, token) {
+                                        if (err) throw err;
+                                        if (token) {
+                                            logger.info("User logged in, sending: ", userinfo);
+                                            res.status(200).json({
+                                                status: 200,
+                                                result: {...userinfo, token },
+                                            });
+                                        }
+                                        logger.debug("Logged in");
+                                    }
+                                );
+                            } else {
+                                logger.info("Password invalid");
+                                res.status(401).json({
+                                    status: 401,
+                                    message: "Wachtwoord ongeldig.",
+                                    datetime: new Date().toISOString,
+                                });
+                            }
+                        });
+                }
             }
-        });
+        );
     },
     validateLogin: (req, res, next) => {
         //Make sure you have the expected input
@@ -124,6 +125,7 @@ let controller = {
 
             jwt.verify(token, jwtSecretKey, (err, payload) => {
                 logger.debug(payload);
+                logger.warn(err.message);
                 if (err) {
                     logger.warn(err.message);
                     res.status(401).json({
@@ -132,20 +134,12 @@ let controller = {
                         datetime: new Date().toISOString,
                     });
                 }
-                if (payload.docentID) {
+                if (payload) {
                     logger.debug("token is valid", payload);
                     //User has acces. Add userId from payload to
                     //request, for every next endpoint
-                    logger.debug(payload.docentID);
-                    req.docentID = payload.docentID;
-                    next();
-                }
-                if (payload.medewerkerID) {
-                    logger.debug("token is valid", payload);
-                    //User has acces. Add userId from payload to
-                    //request, for every next endpoint
-                    logger.debug(payload.medewerkerID);
-                    req.medewerkerID = payload.medewerkerID;
+                    logger.debug(payload.emailadres);
+                    req.emailadres = payload.emailadres;
                     next();
                 }
             });
@@ -161,16 +155,18 @@ let controller = {
         achternaam = req.body.achternaam;
 
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-            let sql = "INSERT INTO login (emailadres, wachtwoord, rol, isAccepted) VALUES ?";
-            let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
-            let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
+            let sql =
+                "INSERT INTO login (emailadres, wachtwoord, rol, isAccepted) VALUES ?";
+            let sqlMedewerker =
+                "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
+            let sqlDocent =
+                "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
             let valuesLogin = [
                 [emailadres, hash, rol, 0]
             ];
             let valuesMedewerker = [
                 [naam, achternaam, emailadres]
             ];
-
 
             pool.query(sql, [valuesLogin], (dbError, result) => {
                 if (dbError) {
@@ -191,10 +187,7 @@ let controller = {
                 //     });
                 // }
 
-
-
                 if (rol === "Docent") {
-
                     geboortedatum = req.body.geboortedatum;
                     geboorteplaats = req.body.geboorteplaats;
                     maxRijafstand = req.body.maxRijafstand;
@@ -211,7 +204,24 @@ let controller = {
                     //doelgroep = req.body.doelgroep;
 
                     let valuesDocent = [
-                        [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, emailadres]
+                        [
+                            naam,
+                            achternaam,
+                            geboortedatum,
+                            geboorteplaats,
+                            maxRijafstand,
+                            heeftRijbewijs,
+                            heeftAuto,
+                            straat,
+                            huisnummer,
+                            geslacht,
+                            nationaliteit,
+                            woonplaats,
+                            postcode,
+                            land,
+                            isFlexwerker,
+                            emailadres,
+                        ],
                     ];
 
                     pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
@@ -252,17 +262,11 @@ let controller = {
                         }
                     });
                 }
-
-
-
-
             });
-
-
         });
     },
     deleteUser: (req, res, next) => {
-        const userEmail = req.params.emailadres;
+        const userEmail = req.params.id;
         let user;
         logger.debug(`User with email ${userEmail} requested to be deleted`);
 
@@ -308,7 +312,7 @@ let controller = {
                     });
                 }
             }
-        )
+        );
     },
     getAllUsers: (req, res, next) => {
         const { naam, isAccepted } = req.query;
@@ -331,7 +335,6 @@ let controller = {
         logger.debug(queryString);
 
         pool.query(queryString, function(error, results, fields) {
-
             // Handle error after the release.
             if (error) {
                 next(error);

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const employeeController = require("../controllers/employee.controller");
 const docentController = require("../controllers/docent.controller");
-const aunthController = require("../controllers/auth.controller");
+const authController = require("../controllers/auth.controller");
 
 //Add user
 router.post("/", employeeController.validateUser, employeeController.addUser);
@@ -10,8 +10,8 @@ router.post("/", employeeController.validateUser, employeeController.addUser);
 //Get all users
 router.get("/", employeeController.getAllUsers);
 
-// //Get route for profile
-//router.get('/profile', authController.validateToken, employeeController.getUserProfile);
+//Get route for profile
+router.get("/profile/:emailadres", employeeController.getUserProfile);
 
 // //Get routes for specific users
 // router.get('/:id', authController.validateToken, employeeController.validateId, employeeController.getUserById);
