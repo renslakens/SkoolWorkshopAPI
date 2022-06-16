@@ -319,7 +319,7 @@ let controller = {
         });
     },
     deleteUser: (req, res, next) => {
-        const userEmail = req.params.id;
+        const userEmail = req.params.emailadres;
         let user;
         logger.debug(`User with email ${userEmail} requested to be deleted`);
 
