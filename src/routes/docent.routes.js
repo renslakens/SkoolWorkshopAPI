@@ -9,19 +9,8 @@ router.post("/", docentController.validateDocent, docentController.addUser);
 //Get all users
 router.get("/", docentController.getAllUsers);
 
-// Put route for accepting a new docent
-router.put(
-  "/:id",
-  //aunthController.validateEmployeeToken,
-  docentController.acceptUser
-);
-
-//Get route for profile
-router.get(
-  "/profile/:emailadres",
-  authController.validateToken,
-  docentController.getUserProfile
-);
+// //Get route for profile
+// router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
 
 //Get routes for specific users
 router.get("/:id", docentController.validateId, docentController.getDocent);
@@ -30,11 +19,7 @@ router.get("/:id", docentController.validateId, docentController.getDocent);
 // router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
 
 // Put route for accepting a new docent
-router.put(
-  "/:id",
-  //aunthController.validateEmployeeToken,
-  docentController.acceptUser
-);
+router.put('/:id', docentController.validateId, docentController.updateDocent);
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
