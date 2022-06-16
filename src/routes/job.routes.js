@@ -14,6 +14,7 @@ router.put("/:id", jobController.updateJob);
 //Get all open jobs
 router.get("/", jobController.getJobs);
 
+//Get one job
 router.get("/:id", jobController.getJob);
 
 //Teacher added to job

@@ -15,16 +15,16 @@ let controller = {
     login: (req, res, next) => {
         //Assert for validation
         const { emailadres } = req.body;
-        logger.debug(emailadres, " ", req.body.wachtwoord);
+        logger.debug(emailadres, req.body.wachtwoord);
 
-        const queryString = "SELECT emailadres, wachtwoord FROM Login WHERE emailadres = ?";
+        const queryString = "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
 
         pool.query(queryString, [emailadres], function(error, results, fields) {
             // Handle error after the release.
             if (error) {
-                logger.error("Error: ", err.toString());
+                logger.error("Error: ", error.toString());
                 res.status(500).json({
-                    error: err.toString(),
+                    error: error.toString(),
                     datetime: new Date().toISOString(),
                 });
             }
@@ -160,16 +160,12 @@ let controller = {
         naam = req.body.naam;
         achternaam = req.body.achternaam;
 
-
-        
-
-
         bcrypt.hash(wachtwoord, saltRounds, function(err, hash) {
-            let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
+            let sql = "INSERT INTO login (emailadres, wachtwoord, rol, isAccepted) VALUES ?";
             let sqlMedewerker = "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
             let sqlDocent = "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
             let valuesLogin = [
-                [emailadres, hash, rol]
+                [emailadres, hash, rol, 0]
             ];
             let valuesMedewerker = [
                 [naam, achternaam, emailadres]
@@ -190,63 +186,63 @@ let controller = {
 
                 if (rol === "Docent") {
 
-                  geboortedatum = req.body.geboortedatum;
-                  geboorteplaats = req.body.geboorteplaats;
-                  maxRijafstand = req.body.maxRijafstand;
-                  heeftRijbewijs = req.body.heeftRijbewijs;
-                  heeftAuto = req.body.heeftAuto;
-                  straat = req.body.straat;
-                  huisnummer = req.body.huisnummer;
-                  geslacht = req.body.geslacht;
-                  nationaliteit = req.body.nationaliteit;
-                  woonplaats = req.body.woonplaats;
-                  postcode = req.body.postcode;
-                  land = req.body.land;
-                  isFlexwerker = req.body.isFlexwerker;
-                  //doelgroep = req.body.doelgroep;
+                    geboortedatum = req.body.geboortedatum;
+                    geboorteplaats = req.body.geboorteplaats;
+                    maxRijafstand = req.body.maxRijafstand;
+                    heeftRijbewijs = req.body.heeftRijbewijs;
+                    heeftAuto = req.body.heeftAuto;
+                    straat = req.body.straat;
+                    huisnummer = req.body.huisnummer;
+                    geslacht = req.body.geslacht;
+                    nationaliteit = req.body.nationaliteit;
+                    woonplaats = req.body.woonplaats;
+                    postcode = req.body.postcode;
+                    land = req.body.land;
+                    isFlexwerker = req.body.isFlexwerker;
+                    //doelgroep = req.body.doelgroep;
 
-                  let valuesDocent = [
-                    [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, emailadres]
-                ];
+                    let valuesDocent = [
+                        [naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, emailadres]
+                    ];
 
-                  pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
-                      if (dbError) {
-                          logger.debug(dbError.message);
-                          const error = {
-                              status: 409,
-                              message: "Teacher has not been added",
-                              result: "User is niet toegevoegd in database",
-                          };
-                          next(error);
-                      } else {
-                          logger.debug("InsertId is: ", result.insertId);
-                          res.status(201).json({
-                              status: 201,
-                              message: "User is toegevoegd in database",
-                              result: { id: result.insertId, ...user },
-                          });
-                      }
-                  });
-              } else {
-                  pool.query(sqlMedewerker, [valuesMedewerker], (dbError, result) => {
-                      if (dbError) {
-                          logger.debug(dbError.message);
-                          const error = {
-                              status: 409,
-                              message: "Employee has not been added",
-                              result: "User is niet toegevoegd in database",
-                          };
-                          next(error);
-                      } else {
-                          logger.debug("InsertId is: ", result.insertId);
-                          res.status(201).json({
-                              status: 201,
-                              message: "User is toegevoegd in database",
-                              result: { id: result.insertId, ...user },
-                          });
-                      }
-                  });
-              }
+                    pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
+                        if (dbError) {
+                            logger.debug(dbError.message);
+                            const error = {
+                                status: 409,
+                                message: "Teacher has not been added",
+                                result: "User is niet toegevoegd in database",
+                            };
+                            next(error);
+                        } else {
+                            logger.debug("InsertId is: ", result.insertId);
+                            res.status(201).json({
+                                status: 201,
+                                message: "User is toegevoegd in database",
+                                result: { id: result.insertId, ...user },
+                            });
+                        }
+                    });
+                } else {
+                    pool.query(sqlMedewerker, [valuesMedewerker], (dbError, result) => {
+                        if (dbError) {
+                            logger.debug(dbError.message);
+                            const error = {
+                                status: 409,
+                                message: "Employee has not been added",
+                                result: "User is niet toegevoegd in database",
+                            };
+                            next(error);
+                        } else {
+                            logger.debug("InsertId is: ", result.insertId);
+                            res.status(201).json({
+                                status: 201,
+                                message: "User is toegevoegd in database",
+                                result: { id: result.insertId, ...user },
+                            });
+                        }
+                    });
+                }
 
 
 
@@ -257,7 +253,7 @@ let controller = {
         });
     },
     deleteUser: (req, res, next) => {
-        const userEmail = req.params.id;
+        const userEmail = req.params.emailadres;
         let user;
         logger.debug(`User with email ${userEmail} requested to be deleted`);
 
@@ -279,6 +275,65 @@ let controller = {
                 }
             }
         );
+    },
+
+    acceptUser: (req, res, next) => {
+        const emailadres = req.params.emailadres;
+        let user;
+        logger.debug(`User with emailadres ${emailadres} requested to be updated`);
+
+        pool.query(
+            "UPDATE login SET isAccepted = ? WHERE emailadres = ?;", [1, emailadres],
+            function(error, results, fields) {
+                if (error) throw error;
+
+                if (results.affectedRows > 0) {
+                    res.status(200).json({
+                        status: 200,
+                        message: `User with emailadres ${emailadres} succesfully updated`,
+                    });
+                } else {
+                    res.status(400).json({
+                        status: 400,
+                        message: `User does not exist`,
+                    });
+                }
+            }
+        )
+    },
+    getAllUsers: (req, res, next) => {
+        const { naam, isAccepted } = req.query;
+        logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
+
+        let queryString = "SELECT * FROM `Login`";
+
+        if (naam || isAccepted) {
+            queryString += " WHERE ";
+            if (naam) {
+                queryString += `naam LIKE '%${naam}%'`;
+            }
+            if (naam && isAccepted) {
+                queryString += " AND ";
+            }
+            if (isAccepted) {
+                queryString += `isAccepted='${isAccepted}'`;
+            }
+        }
+        logger.debug(queryString);
+
+        pool.query(queryString, function(error, results, fields) {
+
+            // Handle error after the release.
+            if (error) {
+                next(error);
+            }
+
+            // logger.debug("#results =", results.length);
+            res.status(200).json({
+                status: 200,
+                result: results,
+            });
+        });
     },
 };
 
