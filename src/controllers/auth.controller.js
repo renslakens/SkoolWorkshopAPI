@@ -12,10 +12,11 @@ const passwordRegex =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
 
 let controller = {
-  login: (req, res, next) => {
+    login: (req, res, next) => {
     //Assert for validation
     const {emailadres} = req.body;
     logger.debug(emailadres, req.body.wachtwoord);
+    const queryString = "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
 
     pool.query(
       queryString,
@@ -29,7 +30,6 @@ let controller = {
             datetime: new Date().toISOString(),
           });
         }
-
                 if (results && results.length === 1) {
                     logger.debug(results[0].wachtwoord);
                     // User found with this emailaddress
