@@ -14,23 +14,24 @@ const workshopRoutes = require("./src/routes/workshop.routes");
 const jobRoutes = require("./src/routes/job.routes");
 const docentRoutes = require("./src/routes/docent.routes");
 const taRoutes = require("./src/routes/ta.routes");
+const locationRoutes = require("./src/routes/location.routes");
 
 app.use(bodyParser.json());
 
 app.all("*", (req, res, next) => {
-    const method = req.method;
+  const method = req.method;
 
-    logger.debug(`Method ${method} is aangeroepen`);
-    next();
+  logger.debug(`Method ${method} is aangeroepen`);
+  next();
 });
 
 //Default route
 app.get("/", (req, res) => {
-    logger.debug("User is on default endpoint");
-    res.status(200).json({
-        status: 200,
-        result: "Skool Workshop API",
-    });
+  logger.debug("User is on default endpoint");
+  res.status(200).json({
+    status: 200,
+    result: "Skool Workshop API",
+  });
 });
 
 //Docent route
@@ -54,32 +55,35 @@ app.use("/api/customer", customerRoutes);
 //target audience route
 app.use("/api/ta", taRoutes);
 
+//Location route
+app.use("/api/location", locationRoutes);
+
 app.all("*", (req, res) => {
-    res.status(401).json({
-        status: 401,
-        result: "End-point not found",
-    });
+  res.status(401).json({
+    status: 401,
+    result: "End-point not found",
+  });
 });
 
 //Error handler
 app.use((err, req, res, next) => {
-    logger.error(err);
-    res.status(err.status).json(err);
+  logger.error(err);
+  res.status(err.status).json(err);
 });
 
 //Welcome message
 app.listen(port, () => {
-    logger.debug(`API listening on port ${port}`);
+  logger.debug(`API listening on port ${port}`);
 });
 
 process.on("SIGINT", () => {
-    logger.debug("SIGINT signal received: closing HTTP server");
-    dbconnection.end((err) => {
-        logger.debug("Database connection closed");
-    });
-    app.close(() => {
-        logger.debug("HTTP server closed");
-    });
+  logger.debug("SIGINT signal received: closing HTTP server");
+  dbconnection.end((err) => {
+    logger.debug("Database connection closed");
+  });
+  app.close(() => {
+    logger.debug("HTTP server closed");
+  });
 });
 
 module.exports = app;
