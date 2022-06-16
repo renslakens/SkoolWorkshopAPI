@@ -111,7 +111,6 @@ let controller = {
         res.status(200).json({
           status: 200,
           result: results,
-          message: "Er zijn geen openstaande opdrachten",
         });
       }
     });

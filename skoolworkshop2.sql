@@ -114,10 +114,17 @@ CREATE TABLE WorkshopDocent (
 	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID)
 );
 
+CREATE TABLE DoelgroepDocent (
+	docentID int,
+	doelgroepID int,
+	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
+	FOREIGN KEY (doelgroepID) REFERENCES Doelgroep(doelgroepID)
+);
+
 CREATE TABLE DocentInOpdracht (
-	isBevestigd boolean DEFAULT FALSE,
 	docentID int,
 	opdrachtID int,
+    isBevestigd boolean DEFAULT FALSE,
 	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
 	CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)

@@ -165,7 +165,7 @@ let controller = {
         logger.debug(`User with ID ${docentID} requested to be updated`);
 
         pool.query(
-            "UPDATE docent SET isAccepted = ? WHERE docentID = ?;", [1, docentID],
+            "UPDATE login SET isAccepted = ? WHERE emailadres = ?;", [1, docentID],
             function(error, results, fields) {
                 if (error) throw error;
 
@@ -183,10 +183,20 @@ let controller = {
             }
         )
     },
-    updateUser: (req, res, next) => {
+    updateDocent: (req, res, next) => {
         const docentID = req.params.id;
         const updateUser = req.body;
+        let valuesDoelgroep = req.body.doelgroep;
+        let valuesWorkshop = req.body.workshop;
+        let sqlDoelgroep = "INSERT INTO doelgroepdocent (docentID, doelgroepID) VALUES ?";
+        let sqlWorkshop = "INSERT INTO workshopdocent (docentID, workshopID) VALUES ?";
         logger.debug(`User with ID ${docentID} requested to be updated`);
+        // let valuesDoelgroep = [
+        //     req.body.doelgroep;
+        // ];
+        // let valuesWorkshop = [
+        //     [workshop]
+        // ];
 
         pool.query(
             "Update docent SET naam = ?, achternaam = ?, emaildres = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ? WHERE docentID = ?;", [updateUser.naam, updateUser.achternaam, updateUser.emailadres, updateUser.geboortedatum, updateUser.geboorteplaats, updateUser.maxRijafstand, updateUser.heeftRijbewijs, updateUser.heeftAuto, updateUser.straat, updateUser.huisnummer, updateUser.geslacht, updateUser.nationaliteit, updateUser.woonplaats, updateUser.postcode, updateUser.land, docentID],
@@ -199,12 +209,66 @@ let controller = {
                     return;
                 }
                 if (results.affectedRows > 0) {
-                    connection.query('SELECT * FROM docent WHERE id = ?;', [docentID], function(error, results, fields) {
-                        res.status(200).json({
-                            status: 200,
-                            result: results[0],
-                        });
+                    valuesDoelgroep.forEach(sqlDoelgroep, [docentID, valuesDoelgroep], (dbError, result) => {
+                        if (dbError) {
+                            logger.debug(dbError.message);
+                            const error = {
+                                status: 409,
+                                message: "Update failed, target audience preference error",
+                            };
+                            next(error);
+                        } else {
+                            valuesWorkshop.forEach(sqlWorkshop, [docentID, valuesWorkshop], (dbError, result) => {
+                                if (dbError) {
+                                    error = {
+                                        status: 409,
+                                        message: "Update failed, workshop preference error",
+                                    };
+                                } else {
+                                    pool.query('SELECT * FROM docent WHERE id = ?;', [docentID], function(error, results, fields){
+                                        res.status(200).json({
+                                            status:200,
+                                            result: results[0],
+                                        })
+                                    })
+                                }
+                            })
+                        }
                     });
+
+
+
+
+
+
+                    // pool.query(sqlDoelgroep, [valuesDoelgroep], (dbError, result) => {
+                    //     if (dbError) {
+                    //         logger.debug(dbError.message);
+                    //         const error = {
+                    //             status: 409,
+                    //             message: "Update failed, target audience preference error",
+                    //         };
+                    //         next(error);
+                    //     } else {
+                    //         pool.query(sqlWorkshop, [valuesWorkshop], (dbError, result) => {
+                    //             if (dbError) {
+                    //                 logger.debug(dbError.message);
+                    //                 const error = {
+                    //                     status: 409,
+                    //                     message: "Update failed, workshop preference error"
+                    //                 }
+                    //             } else {
+                    //                 connection.query('SELECT * FROM docent WHERE id = ?;', [docentID], function(error, results, fields) {
+                    //                     res.status(200).json({
+                    //                         status: 200,
+                    //                         result: results[0],
+                    //                     });
+                    //                 })
+                    //             }
+                    //         })
+                    //     }
+                    // });
+
                 } else {
                     res.status(400).json({
                         status: 400,
