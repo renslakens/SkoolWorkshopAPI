@@ -40,6 +40,7 @@ CREATE TABLE Docent (
 	isFlexwerker boolean,
 	loginEmail varchar(50) NOT NULL,
 	doelgroep varchar(15) NOT NULL,
+	telefoonnummer varchar(10) NOT NULL,
 	PRIMARY KEY (docentID),
 	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
 );
