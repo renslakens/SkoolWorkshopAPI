@@ -13,11 +13,6 @@ DROP TABLE IF EXISTS Doelgroep;
 DROP TABLE IF EXISTS Workshop;
 DROP TABLE IF EXISTS Login;
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> c670bbb504c26d9c45a86bde14cd7b4b87dc202f
 CREATE TABLE Login (
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,

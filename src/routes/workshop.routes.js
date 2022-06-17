@@ -6,21 +6,21 @@ const workshopController = require('../controllers/workshop.controller')
 //Add workshop
 router.post(
     '/',
-    authController.validateToken,
+    //authController.validateToken,
     workshopController.addWorkshop,
 )
 
 //Delete workshop
 router.delete(
     '/:id',
-    authController.validateToken,
+    //authController.validateToken,
     workshopController.deleteWorkshop,
 )
 
 //Update workshop
 router.put(
     '/:id',
-    authController.validateToken,
+    //authController.validateToken,
     workshopController.updateWorkshop,
 )
 
