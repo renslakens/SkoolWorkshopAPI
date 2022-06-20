@@ -9,24 +9,10 @@ router.post("/", docentController.validateDocent, docentController.addUser);
 //Get all users
 router.get("/", docentController.getAllUsers);
 
-// //Get route for profile
-// router.get('/profile', authController.vali   dateToken, userController.getUserProfile);
-
 //Get routes for specific users
 router.get("/:id", docentController.validateId, docentController.getDocent);
 
-// //Put routes for specific users
-// router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
-
 // Put route for accepting a new docent
-router.put('/:id', docentController.validateId, docentController.updateDocent);
-
-// //Delete routes for specific users
-// router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
-// router.delete(
-//     "/:id",
-//     //aunthController.validateEmployeeToken,
-//     docentController.deleteUser
-// );
+router.put("/:id", docentController.validateId, docentController.updateDocent);
 
 module.exports = router;
