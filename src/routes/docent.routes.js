@@ -12,7 +12,4 @@ router.get("/", docentController.getAllUsers);
 //Get routes for specific users
 router.get("/:id", docentController.validateId, docentController.getDocent);
 
-// Put route for accepting a new docent
-router.put("/:id", docentController.validateId, docentController.updateDocent);
-
 module.exports = router;
