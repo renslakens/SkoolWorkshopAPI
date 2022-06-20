@@ -19,7 +19,7 @@ router.get("/:id", docentController.validateId, docentController.getDocent);
 // router.put('/:id', authController.validateToken, userController.validateId, userController.validateUser, userController.updateUser);
 
 // Put route for accepting a new docent
-router.put('/:id', docentController.validateId, docentController.updateDocent);
+// router.put('/:id', docentController.validateId, docentController.updateDocent);
 
 // //Delete routes for specific users
 // router.delete('/:id', authController.validateToken, userController.validateId, userController.deleteUser);
