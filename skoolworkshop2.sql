@@ -23,7 +23,7 @@ CREATE TABLE Login (
 
 CREATE TABLE Docent (
 	docentID int NOT NULL AUTO_INCREMENT,
-	naam varchar(25) NOT NULL,
+	voornaam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
 	geboortedatum date NOT NULL,
 	geboorteplaats varchar(25) NOT NULL,
@@ -33,13 +33,11 @@ CREATE TABLE Docent (
 	straat varchar(25) NOT NULL,
 	huisnummer int NOT NULL,
 	geslacht varchar(5) NOT NULL,
-	nationaliteit varchar(15) NOT NULL,
 	woonplaats varchar(15) NOT NULL,
 	postcode varchar(8) NOT NULL,
 	land varchar(25) NOT NULL,
 	isFlexwerker boolean,
 	loginEmail varchar(50) NOT NULL,
-	doelgroep varchar(15) NOT NULL,
 	telefoonnummer varchar(10) NOT NULL,
 	PRIMARY KEY (docentID),
 	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
