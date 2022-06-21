@@ -158,7 +158,7 @@ let controller = {
     wachtwoord = req.body.wachtwoord;
     rol = req.body.rol;
 
-    naam = req.body.naam;
+    naam = req.body.voornaam;
     achternaam = req.body.achternaam;
 
     bcrypt.hash(wachtwoord, saltRounds, function (err, hash) {
@@ -167,7 +167,7 @@ let controller = {
       let sqlMedewerker =
         "INSERT INTO Medewerker (voornaam, achternaam, loginEmail) VALUES ?";
       let sqlDocent =
-        "INSERT INTO Docent (voornaam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail, telefoonnummer) VALUES ?";
+        "INSERT INTO Docent (voornaam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, woonplaats, postcode, land, isFlexwerker, loginEmail, telefoonnummer) VALUES ?";
       let valuesLogin = [[emailadres, hash, rol, 0]];
       let valuesMedewerker = [[naam, achternaam, emailadres]];
 
@@ -192,7 +192,6 @@ let controller = {
           straat = req.body.straat;
           huisnummer = req.body.huisnummer;
           geslacht = req.body.geslacht;
-          nationaliteit = req.body.nationaliteit;
           woonplaats = req.body.woonplaats;
           postcode = req.body.postcode;
           land = req.body.land;
@@ -212,7 +211,6 @@ let controller = {
               straat,
               huisnummer,
               geslacht,
-              nationaliteit,
               woonplaats,
               postcode,
               land,
