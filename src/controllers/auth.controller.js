@@ -167,9 +167,9 @@ let controller = {
       let sql =
         "INSERT INTO login (emailadres, wachtwoord, rol, isAccepted) VALUES ?";
       let sqlMedewerker =
-        "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
+        "INSERT INTO Medewerker (voornaam, achternaam, loginEmail) VALUES ?";
       let sqlDocent =
-        "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
+        "INSERT INTO Docent (voornaam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
       let valuesLogin = [[emailadres, hash, rol, 0]];
       let valuesMedewerker = [[naam, achternaam, emailadres]];
 

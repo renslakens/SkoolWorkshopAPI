@@ -46,7 +46,7 @@ CREATE TABLE Docent (
 
 CREATE TABLE Medewerker (
 	medewerkerID int NOT NULL AUTO_INCREMENT,
-	naam varchar(25) NOT NULL,
+	voornaam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
 	loginEmail varchar(50) NOT NULL,
 	PRIMARY KEY (medewerkerID),
