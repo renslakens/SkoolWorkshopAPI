@@ -196,30 +196,6 @@ let controller = {
       }
     );
   },
-  /*
-    acceptUser: (req, res, next) => {
-        const docentID = req.params.id;
-        logger.debug(`User with ID ${docentID} requested to be updated`);
-
-        pool.query(
-            "UPDATE docent SET isAccepted = ? WHERE docentID = ?;", [1, docentID],
-            function(error, results, fields) {
-                if (error) throw error;
-
-                if (results.affectedRows > 0) {
-                    res.status(200).json({
-                        status: 200,
-                        message: `User with ID ${docentID} succesfully updated`,
-                    });
-                } else {
-                    res.status(400).json({
-                        status: 400,
-                        message: `User does not exist`,
-                    });
-                }
-            }
-        )
-    },*/
   updateUser: (req, res, next) => {
     const medewerkerID = req.params.id;
     const updateUser = req.body;
