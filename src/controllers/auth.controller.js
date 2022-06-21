@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = require("../config/config").jwtSecretKey;
 const logger = require("../config/config").logger;
 const bcrypt = require("bcrypt");
+const { count } = require("console");
 const saltRounds = 10;
 
 const emailRegex =
@@ -343,96 +344,6 @@ let controller = {
         result: results,
       });
     });
-  },
-  updateDocent: (req, res, next) => {
-    const docentID = req.params.id;
-    const updateUser = req.body;
-    const docentIDint = parseInt(docentID);
-    let valuesDoelgroep = req.body.doelgroep;
-    let valuesWorkshop = req.body.workshop;
-    let sqlDoelgroepDelete = "DELETE FROM doelgroepdocent WHERE docentID = ?;";
-    let sqlDoelgroep =
-      "INSERT INTO doelgroepdocent (docentID, doelgroepID) VALUES (?, ?)";
-    let sqlWorkshop =
-      "INSERT INTO workshopdocent (docentID, workshopID) VALUES (?, ?)";
-    logger.debug(
-      `User with ID ${docentID} requested to be updated, trying to insert ${valuesDoelgroep.toString}`
-    );
-    // logger.debug(`trying to insert ${sqlDoelgroep.toString}`);
-
-    pool.query(
-      "Update docent SET naam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ? WHERE docentID = ?;",
-      [
-        updateUser.naam,
-        updateUser.achternaam,
-        updateUser.geboortedatum,
-        updateUser.geboorteplaats,
-        updateUser.maxRijafstand,
-        updateUser.heeftRijbewijs,
-        updateUser.heeftAuto,
-        updateUser.straat,
-        updateUser.huisnummer,
-        updateUser.geslacht,
-        updateUser.nationaliteit,
-        updateUser.woonplaats,
-        updateUser.postcode,
-        updateUser.land,
-        updateUser.emailadres,
-        docentID,
-      ],
-      function (error, results, fields) {
-        if (error) {
-          res.status(401).json({
-            status: 401,
-            message: `Update failed, provided email already taken`,
-          });
-          return;
-        } else if (results.affectedRows > 0) {
-          //   pool.query(sqlDoelgroepDelete, [docentIDint]);
-          valuesDoelgroep.forEach((element) => {
-            let count = 0;
-            let doelgroep = valuesDoelgroep[count];
-            pool.query(doelgroep, [docentIDint]),
-              (dbError, result) => {
-                if (dbError) {
-                  logger.debug(dbError.message);
-                  const error = {
-                    status: 409,
-                    message: "Update failed, target audience preference error",
-                  };
-                  next(error);
-                }
-                count++;
-              };
-          });
-
-          valuesWorkshop.forEach((element) => {
-            let workshop = valuesWorkshop[0];
-            pool.query(sqlWorkshop, [docentIDint, workshop]),
-              (dbError, result) => {
-                if (dbError) {
-                  logger.debug(dbError.message);
-                  const error = {
-                    status: 409,
-                    message: "Update failed, workshop preference error",
-                  };
-                  valuesWorkshop.slice(1);
-                  next(error);
-                }
-              };
-          });
-          res.status(201).json({
-            status: 201,
-            message: "Voorkeuren zijn toegevoegd aan de database",
-          });
-        } else {
-          res.status(400).json({
-            status: 400,
-            message: `Update failed, user with ID ${docentID} does not exist`,
-          });
-        }
-      }
-    );
   },
 };
 
