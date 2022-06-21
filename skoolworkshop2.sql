@@ -55,7 +55,7 @@ CREATE TABLE Medewerker (
 
 CREATE TABLE Klant (
 	klantID int NOT NULL AUTO_INCREMENT,
-	naam varchar(25) NOT NULL,
+	voornaam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
 	postcode varchar(8) NOT NULL,
 	telefoonnummer varchar(10) NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE Klant (
 	plaats varchar(25) NOT NULL,
 	klantType varchar(25),
 	land varchar(25) NOT NULL,
-	naamContactpersoon varchar(50) NOT NULL,
+	emailContactpersoon varchar(50) NOT NULL,
 	PRIMARY KEY (klantID)
 );
 

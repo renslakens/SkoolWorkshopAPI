@@ -97,7 +97,7 @@ let controller = {
     const customer = req.body;
 
     pool.query(
-      "INSERT INTO Klant (naam, achternaam, postcode, telefoonnummer, straat, huisnummer, plaats, klantType, land, naamContactpersoon) VALUES (?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO Klant (voornaam, achternaam, postcode, telefoonnummer, straat, huisnummer, plaats, klantType, land, emailContactpersoon) VALUES (?,?,?,?,?,?,?,?,?,?)",
       [
         customer.naam,
         customer.achternaam,
@@ -195,9 +195,9 @@ let controller = {
     logger.debug(`customer with ID ${customerID} requested to be updated`);
 
     pool.query(
-      "UPDATE Klant SET naam=?, achternaam=?, postcode=?, telefoonnummer=?, straat=?, huisnummer=?, plaats=?, klantType=?, land=?, naamContactpersoon=? WHERE KlantID = ?;",
+      "UPDATE Klant SET voornaam=?, achternaam=?, postcode=?, telefoonnummer=?, straat=?, huisnummer=?, plaats=?, klantType=?, land=?, emailContactpersoon=? WHERE KlantID = ?;",
       [
-        customer.naam,
+        customer.voornaam,
         customer.achternaam,
         customer.postcode,
         customer.telefoonnummer,
@@ -206,7 +206,7 @@ let controller = {
         customer.plaats,
         customer.klantType,
         customer.land,
-        customer.naamContactpersoon,
+        customer.emailContactpersoon,
         customerID,
       ],
       function (error, results, fields) {
