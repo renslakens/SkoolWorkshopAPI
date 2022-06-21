@@ -16,10 +16,6 @@ let controller = {
     //Assert for validation
     const { emailadres } = req.body;
     logger.debug(emailadres, req.body.wachtwoord);
-<<<<<<< HEAD
-=======
-
->>>>>>> feature-doelgroep
     const queryString =
       "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
 
@@ -32,10 +28,6 @@ let controller = {
           datetime: new Date().toISOString(),
         });
       }
-<<<<<<< HEAD
-=======
-
->>>>>>> feature-doelgroep
       if (results && results.length === 1) {
         logger.debug(results[0].wachtwoord);
         // User found with this emailaddress
@@ -132,10 +124,6 @@ let controller = {
 
       jwt.verify(token, jwtSecretKey, (err, payload) => {
         logger.debug(payload);
-<<<<<<< HEAD
-        logger.warn(err.message);
-=======
->>>>>>> feature-doelgroep
         if (err) {
           logger.warn(err.message);
           res.status(401).json({
@@ -143,45 +131,6 @@ let controller = {
             message: "Not authorized",
             datetime: new Date().toISOString,
           });
-<<<<<<< HEAD
-        }
-        if (payload) {
-          logger.debug("token is valid", payload);
-          //User has acces. Add userId from payload to
-          //request, for every next endpoint
-          logger.debug(payload.emailadres);
-          req.emailadres = payload.emailadres;
-          next();
-        }
-      });
-    }
-  },
-  updateMail: (req, res, next) => {
-    const body = req.body;
-    const email = body.emailadres;
-    const newMail = body.newEmailadres;
-
-    pool.query(
-      "SELECT emailadres FROM login WHERE emailadres = ?",
-      [email],
-      function (error, results, fields) {
-        // Handle error after the release.
-        if (error) {
-          logger.error("Error: ", err.toString());
-          res.status(500).json({
-            error: err.toString(),
-            datetime: new Date().toISOString(),
-          });
-        }
-        logger.debug(results.length);
-        if (results.length > 0) {
-          logger.debug(results[0]);
-          {
-            logger.debug(newMail);
-            pool.query(
-              "UPDATE login SET emailadres = ? WHERE emailadres = ?",
-              [newMail, email],
-=======
         }
         if (payload.docentID) {
           logger.debug("token is valid", payload);
@@ -444,240 +393,11 @@ let controller = {
             let count = 0;
             let doelgroep = valuesDoelgroep[count];
             pool.query(doelgroep, [docentIDint]),
->>>>>>> feature-doelgroep
               (dbError, result) => {
                 if (dbError) {
                   logger.debug(dbError.message);
                   const error = {
                     status: 409,
-<<<<<<< HEAD
-                    message: "User has not been added",
-                    result: "User is niet toegevoegd in database",
-                  };
-                  next(error);
-                } else {
-                  logger.debug("InsertId is: ", result.insertId);
-                  res.status(201).json({
-                    status: 201,
-                    message: "Email adres is veranderd",
-                    result: { newMail },
-                  });
-                }
-              }
-            );
-          }
-        } else {
-          const error = {
-            status: 409,
-            message: "Email niet gevonden",
-          };
-          next(error);
-        }
-      }
-    );
-  },
-  register: (req, res, next) => {
-    const user = req.body;
-    emailadres = req.body.emailadres;
-    wachtwoord = req.body.wachtwoord;
-    rol = req.body.rol;
-
-    naam = req.body.naam;
-    achternaam = req.body.achternaam;
-
-    bcrypt.hash(wachtwoord, saltRounds, function (err, hash) {
-      let sql =
-        "INSERT INTO login (emailadres, wachtwoord, rol, isAccepted) VALUES ?";
-      let sqlMedewerker =
-        "INSERT INTO Medewerker (naam, achternaam, loginEmail) VALUES ?";
-      let sqlDocent =
-        "INSERT INTO Docent (naam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail, telefoonnummer) VALUES ?";
-      let valuesLogin = [[emailadres, hash, rol, 0]];
-      let valuesMedewerker = [[naam, achternaam, emailadres]];
-
-      pool.query(sql, [valuesLogin], (dbError, result) => {
-        if (dbError) {
-          logger.debug(dbError.message);
-          const error = {
-            status: 409,
-            message: "User has not been added to login",
-            result: "User is niet toegevoegd in database",
-          };
-          next(error);
-          return;
-        } // } else {
-        //     logger.debug("InsertId is: ", result.insertId);
-        //     res.status(201).json({
-        //         status: 201,
-        //         message: "User is toegevoegd in database",
-        //         result: { id: result.insertId, ...user },
-        //     });
-        // }
-
-        if (rol === "Docent") {
-          geboortedatum = req.body.geboortedatum;
-          geboorteplaats = req.body.geboorteplaats;
-          maxRijafstand = req.body.maxRijafstand;
-          heeftRijbewijs = req.body.heeftRijbewijs;
-          heeftAuto = req.body.heeftAuto;
-          straat = req.body.straat;
-          huisnummer = req.body.huisnummer;
-          geslacht = req.body.geslacht;
-          nationaliteit = req.body.nationaliteit;
-          woonplaats = req.body.woonplaats;
-          postcode = req.body.postcode;
-          land = req.body.land;
-          isFlexwerker = req.body.isFlexwerker;
-          telefoonnummer = req.body.telefoonnummer;
-          //doelgroep = req.body.doelgroep;
-
-          let valuesDocent = [
-            [
-              naam,
-              achternaam,
-              geboortedatum,
-              geboorteplaats,
-              maxRijafstand,
-              heeftRijbewijs,
-              heeftAuto,
-              straat,
-              huisnummer,
-              geslacht,
-              nationaliteit,
-              woonplaats,
-              postcode,
-              land,
-              isFlexwerker,
-              emailadres,
-              telefoonnummer,
-            ],
-          ];
-
-          pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
-            if (dbError) {
-              logger.debug(dbError.message);
-              const error = {
-                status: 409,
-                message: "Teacher has not been added",
-                result: "User is niet toegevoegd in database",
-              };
-              next(error);
-            } else {
-              logger.debug("InsertId is: ", result.insertId);
-              res.status(201).json({
-                status: 201,
-                message: "User is toegevoegd in database",
-                result: { id: result.insertId, ...user },
-              });
-            }
-          });
-        } else {
-          pool.query(sqlMedewerker, [valuesMedewerker], (dbError, result) => {
-            if (dbError) {
-              logger.debug(dbError.message);
-              const error = {
-                status: 409,
-                message: "Employee has not been added",
-                result: "User is niet toegevoegd in database",
-              };
-              next(error);
-            } else {
-              logger.debug("InsertId is: ", result.insertId);
-              res.status(201).json({
-                status: 201,
-                message: "User is toegevoegd in database",
-                result: { id: result.insertId, ...user },
-              });
-            }
-          });
-        }
-      });
-    });
-  },
-  deleteUser: (req, res, next) => {
-    const userEmail = req.params.emailadres;
-    let user;
-    logger.debug(`User with email ${userEmail} requested to be deleted`);
-
-    pool.query(
-      "DELETE FROM login WHERE emailadres = ?;",
-      [userEmail],
-      function (error, results, fields) {
-        if (error) throw error;
-
-        if (results.affectedRows > 0) {
-          res.status(200).json({
-            status: 200,
-            message: `User with email ${userEmail} succesfully deleted`,
-          });
-        } else {
-          res.status(400).json({
-            status: 400,
-            message: `User does not exist`,
-          });
-        }
-      }
-    );
-  },
-  acceptUser: (req, res, next) => {
-    const emailadres = req.params.emailadres;
-    let user;
-    logger.debug(`User with emailadres ${emailadres} requested to be Accepted`);
-
-    pool.query(
-      "UPDATE login SET isAccepted = ? WHERE emailadres = ?;",
-      [1, emailadres],
-      function (error, results, fields) {
-        if (error) throw error;
-
-        if (results.affectedRows > 0) {
-          res.status(200).json({
-            status: 200,
-            message: `User with emailadres ${emailadres} succesfully Accepted`,
-          });
-        } else {
-          res.status(400).json({
-            status: 400,
-            message: `User does not exist`,
-          });
-        }
-      }
-    );
-  },
-  getAllUsers: (req, res, next) => {
-    const { naam, isAccepted } = req.query;
-    logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
-
-    let queryString = "SELECT * FROM `Login`";
-
-    if (naam || isAccepted) {
-      queryString += " WHERE ";
-      if (naam) {
-        queryString += `naam LIKE '%${naam}%'`;
-      }
-      if (naam && isAccepted) {
-        queryString += " AND ";
-      }
-      if (isAccepted) {
-        queryString += `isAccepted='${isAccepted}'`;
-      }
-    }
-    logger.debug(queryString);
-
-    pool.query(queryString, function (error, results, fields) {
-      // Handle error after the release.
-      if (error) {
-        next(error);
-      }
-
-      // logger.debug("#results =", results.length);
-      res.status(200).json({
-        status: 200,
-        result: results,
-      });
-    });
-  },
-=======
                     message: "Update failed, target audience preference error",
                   };
                   next(error);
@@ -714,7 +434,6 @@ let controller = {
       }
     );
   },
->>>>>>> feature-doelgroep
 };
 
 module.exports = controller;
