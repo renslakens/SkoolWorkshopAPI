@@ -77,36 +77,6 @@ let controller = {
       next(error);
     }
   },
-  addUser: (req, res, next) => {
-    const user = req.body;
-    emailadres = req.body.emailadres;
-    wachtwoord = req.body.wachtwoord;
-    rol = req.body.rol;
-
-    bcrypt.hash(wachtwoord, saltRounds, function (err, hash) {
-      let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
-      let values = [[emailadres, hash, rol]];
-
-      pool.query(sql, [values], (dbError, result) => {
-        if (dbError) {
-          logger.debug(dbError.message);
-          const error = {
-            status: 409,
-            message: "User has not been added",
-            result: "User is niet toegevoegd in database",
-          };
-          next(error);
-        } else {
-          logger.debug("InsertId is: ", result.insertId);
-          res.status(201).json({
-            status: 201,
-            message: "User is toegevoegd in database",
-            result: { id: result.insertId, ...user },
-          });
-        }
-      });
-    });
-  },
   getAllUsers: (req, res, next) => {
     const { naam, isAccepted } = req.query;
     logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
@@ -205,7 +175,7 @@ let controller = {
     );
 
     pool.query(
-      "Update docent SET naam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ? WHERE docentID = ?;",
+      "Update docent SET voornaam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ? WHERE docentID = ?;",
       [
         updateUser.naam,
         updateUser.achternaam,
