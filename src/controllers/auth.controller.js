@@ -158,7 +158,7 @@ let controller = {
     wachtwoord = req.body.wachtwoord;
     rol = req.body.rol;
 
-    naam = req.body.voornaam;
+    voornaam = req.body.voornaam;
     achternaam = req.body.achternaam;
 
     bcrypt.hash(wachtwoord, saltRounds, function (err, hash) {
@@ -167,9 +167,9 @@ let controller = {
       let sqlMedewerker =
         "INSERT INTO Medewerker (voornaam, achternaam, loginEmail) VALUES ?";
       let sqlDocent =
-        "INSERT INTO Docent (voornaam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, woonplaats, postcode, land, isFlexwerker, loginEmail, telefoonnummer) VALUES ?";
+        "INSERT INTO Docent (voornaam, achternaam, loginEmail, geslacht, geboortedatum, geboorteplaats, telefoonnummer, straat, huisnummer, postcode, woonplaats, land, heeftRijbewijs, heeftAuto) VALUES ?";
       let valuesLogin = [[emailadres, hash, rol, 0]];
-      let valuesMedewerker = [[naam, achternaam, emailadres]];
+      let valuesMedewerker = [[voornaam, achternaam, emailadres]];
 
       pool.query(sql, [valuesLogin], (dbError, result) => {
         if (dbError) {
@@ -195,28 +195,26 @@ let controller = {
           woonplaats = req.body.woonplaats;
           postcode = req.body.postcode;
           land = req.body.land;
-          isFlexwerker = req.body.isFlexwerker;
+          //isFlexwerker = req.body.isFlexwerker;
           telefoonnummer = req.body.telefoonnummer;
           //doelgroep = req.body.doelgroep;
 
           let valuesDocent = [
             [
-              naam,
+              voornaam,
               achternaam,
+              emailadres,
+              geslacht,
               geboortedatum,
               geboorteplaats,
-              maxRijafstand,
-              heeftRijbewijs,
-              heeftAuto,
+              telefoonnummer,
               straat,
               huisnummer,
-              geslacht,
-              woonplaats,
               postcode,
+              woonplaats,
               land,
-              isFlexwerker,
-              emailadres,
-              telefoonnummer,
+              heeftRijbewijs,
+              heeftAuto,
             ],
           ];
 
