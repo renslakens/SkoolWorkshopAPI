@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = require("../config/config").jwtSecretKey;
 const bcrypt = require("bcrypt");
 const { rollback } = require("../../dbconnection");
+const { count } = require("console");
 const saltRounds = 10;
 
 let controller = {
@@ -189,13 +190,19 @@ let controller = {
     const docentID = req.params.id;
     const updateUser = req.body;
     const docentIDint = parseInt(docentID);
+
     let valuesDoelgroep = req.body.doelgroep;
     let valuesWorkshop = req.body.workshop;
+    let valuesDoelgroepString = valuesDoelgroep;
     let sqlDoelgroep =
       "INSERT INTO doelgroepdocent (docentID, doelgroepID) VALUES (?, ?)";
     let sqlWorkshop =
       "INSERT INTO workshopdocent (docentID, workshopID) VALUES (?, ?)";
-    logger.debug(`User with ID ${docentID} requested to be updated`);
+    let sqlDoelgroepDelete = "DELETE FROM doelgroepdocent WHERE docentID = ?;";
+    let sqlWorkshopDelete = "DELETE FROM workshopdocent WHERE docentID = ?;";
+    logger.debug(
+      `User with ID ${docentID} requested to be updated ${valuesDoelgroep}${valuesWorkshop}`
+    );
 
     pool.query(
       "Update docent SET naam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ? WHERE docentID = ?;",
@@ -225,36 +232,39 @@ let controller = {
           });
           return;
         } else if (results.affectedRows > 0) {
+          pool.query(sqlDoelgroepDelete, [docentIDint]);
+          countd = 0;
           valuesDoelgroep.forEach((element) => {
-            let doelgroep = valuesDoelgroep[0];
-            pool.query(sqlDoelgroep, [docentIDint, doelgroep]),
-              (dbError, result) => {
-                if (dbError) {
-                  logger.debug(dbError.message);
-                  const error = {
-                    status: 409,
-                    message: "Update failed, target audience preference error",
-                  };
-                  next(error);
-                }
-                valuesDoelgroep.shift();
-              };
-          });
+            let doelgroep = valuesDoelgroep[countd];
 
+            pool.query(sqlDoelgroep, [docentIDint, doelgroep]), countd++;
+            (dbError, result) => {
+              if (dbError) {
+                logger.debug(dbError.message);
+                const error = {
+                  status: 409,
+                  message: "Update failed, target audience preference error",
+                };
+                next(error);
+              }
+            };
+          });
+          pool.query(sqlWorkshopDelete, [docentIDint]);
+          countw = 0;
           valuesWorkshop.forEach((element) => {
-            let workshop = valuesWorkshop[0];
-            pool.query(sqlWorkshop, [docentIDint, workshop]),
-              (dbError, result) => {
-                if (dbError) {
-                  logger.debug(dbError.message);
-                  const error = {
-                    status: 409,
-                    message: "Update failed, workshop preference error",
-                  };
-                  valuesWorkshop.slice(1);
-                  next(error);
-                }
-              };
+            let workshop = valuesWorkshop[countw];
+
+            pool.query(sqlWorkshop, [docentIDint, workshop]), countw++;
+            (dbError, result) => {
+              if (dbError) {
+                logger.debug(dbError.message);
+                const error = {
+                  status: 409,
+                  message: "Update failed, workshop preference error",
+                };
+                next(error);
+              }
+            };
           });
 
           res.status(201).json({
