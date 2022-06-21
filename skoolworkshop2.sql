@@ -32,7 +32,7 @@ CREATE TABLE Docent (
 	heeftRijbewijs boolean,
 	heeftAuto boolean,
 	straat varchar(25) NOT NULL,
-	huisnummer int NOT NULL,
+	huisnummer varchar(5) NOT NULL,
 	geslacht varchar(5) NOT NULL,
 	woonplaats varchar(15) NOT NULL,
 	postcode varchar(8) NOT NULL,
