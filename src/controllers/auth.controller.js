@@ -17,7 +17,6 @@ let controller = {
     //Assert for validation
     const { emailadres } = req.body;
     logger.debug(emailadres, req.body.wachtwoord);
-
     const queryString =
       "SELECT emailadres, wachtwoord, rol, isAccepted FROM Login WHERE emailadres = ?";
 
@@ -30,7 +29,6 @@ let controller = {
           datetime: new Date().toISOString(),
         });
       }
-
       if (results && results.length === 1) {
         logger.debug(results[0].wachtwoord);
         // User found with this emailaddress
