@@ -3,9 +3,6 @@ const router = express.Router();
 const docentController = require("../controllers/docent.controller");
 const authController = require("../controllers/auth.controller");
 
-//Add user
-router.post("/", docentController.validateDocent, docentController.addUser);
-
 //Get all users
 router.get("/", docentController.getAllUsers);
 
