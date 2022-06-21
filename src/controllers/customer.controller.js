@@ -26,6 +26,10 @@ let controller = {
       assert(typeof achternaam === "string", "The achternaam must be a string");
       if (postcode != undefined) {
         assert(typeof postcode === "string", "The postalCode must be a string");
+        assert(
+          postcode.match(/^[1-9][0-9]{3} ?(?!sa|sd|ss)[a-z]{2}$/i),
+          "Invalide postcode"
+        );
       }
       if (telefoonnummer != undefined) {
         assert(

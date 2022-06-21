@@ -622,7 +622,7 @@ let controller = {
   acceptUser: (req, res, next) => {
     const emailadres = req.params.emailadres;
     let user;
-    logger.debug(`User with emailadres ${emailadres} requested to be updated`);
+    logger.debug(`User with emailadres ${emailadres} requested to be Accepted`);
 
     pool.query(
       "UPDATE login SET isAccepted = ? WHERE emailadres = ?;",
@@ -633,7 +633,7 @@ let controller = {
         if (results.affectedRows > 0) {
           res.status(200).json({
             status: 200,
-            message: `User with emailadres ${emailadres} succesfully updated`,
+            message: `User with emailadres ${emailadres} succesfully Accepted`,
           });
         } else {
           res.status(400).json({
