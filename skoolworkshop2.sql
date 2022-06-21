@@ -121,7 +121,7 @@ CREATE TABLE DoelgroepDocent (
 	doelgroepID int,
 	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
 	FOREIGN KEY (doelgroepID) REFERENCES doelgroep(doelgroepID)
-)
+);
 
 CREATE TABLE DocentInOpdracht (
 	isBevestigd boolean DEFAULT FALSE,
