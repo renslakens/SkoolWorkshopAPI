@@ -167,7 +167,7 @@ let controller = {
       let sqlMedewerker =
         "INSERT INTO Medewerker (voornaam, achternaam, loginEmail) VALUES ?";
       let sqlDocent =
-        "INSERT INTO Docent (voornaam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail) VALUES ?";
+        "INSERT INTO Docent (voornaam, achternaam, geboortedatum, geboorteplaats, maxRijafstand, heeftRijbewijs, heeftAuto, straat, huisnummer, geslacht, nationaliteit, woonplaats, postcode, land, isFlexwerker, loginEmail, telefoonnummer) VALUES ?";
       let valuesLogin = [[emailadres, hash, rol, 0]];
       let valuesMedewerker = [[naam, achternaam, emailadres]];
 
@@ -197,6 +197,7 @@ let controller = {
           postcode = req.body.postcode;
           land = req.body.land;
           isFlexwerker = req.body.isFlexwerker;
+          telefoonnummer = req.body.telefoonnummer;
           //doelgroep = req.body.doelgroep;
 
           let valuesDocent = [
@@ -217,6 +218,7 @@ let controller = {
               land,
               isFlexwerker,
               emailadres,
+              telefoonnummer,
             ],
           ];
 

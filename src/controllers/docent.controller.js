@@ -175,7 +175,7 @@ let controller = {
     );
 
     pool.query(
-      "Update docent SET voornaam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ? WHERE docentID = ?;",
+      "Update docent SET voornaam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ?, telefoonnummer = ? WHERE docentID = ?;",
       [
         updateUser.naam,
         updateUser.achternaam,
@@ -192,6 +192,7 @@ let controller = {
         updateUser.postcode,
         updateUser.land,
         updateUser.emailadres,
+        updateUser.telefoonnummer,
         docentID,
       ],
       function (error, results, fields) {
