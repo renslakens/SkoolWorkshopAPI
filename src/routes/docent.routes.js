@@ -14,6 +14,6 @@ router.put(
 );
 
 //Get routes for specific users
-router.get("/:id", docentController.validateId, docentController.getDocent);
+router.get("/:emailadres", docentController.getDocent);
 
 module.exports = router;

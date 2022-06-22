@@ -111,10 +111,10 @@ let controller = {
     });
   },
   getDocent: (req, res) => {
-    const docentID = req.params.id;
+    const emailadres = req.body;
     pool.query(
-      "SELECT * FROM docent WHERE docentID = ?;",
-      [docentID],
+      "SELECT * FROM docent WHERE loginEmail = ?;",
+      [emailadres],
       function (error, result) {
         if (error) {
           res.status(400).json({
