@@ -1,4 +1,4 @@
-name: Deploy to DatabaseExtra
+name: Deploy to DatabaseDev
 
 on:
   push:
