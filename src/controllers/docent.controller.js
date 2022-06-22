@@ -124,7 +124,7 @@ let controller = {
         }
         res.status(200).json({
           status: 200,
-          result: { ...result },
+          result: result ,
           message: "De docent is opgehaald",
         });
       }
