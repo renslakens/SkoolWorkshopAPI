@@ -94,7 +94,6 @@ CREATE TABLE Doelgroep (
 CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
 	aantalDocenten int,
-	salarisIndicatie int,
 	startTijd datetime,
 	eindTijd datetime,
 	locatieID int,
