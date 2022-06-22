@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS Workshop;
 DROP TABLE IF EXISTS Login;
 
 CREATE TABLE Login (
+	voornaam varchar(25) NOT NULL,
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,
 	rol varchar(10) NOT NULL DEFAULT "Docent",
