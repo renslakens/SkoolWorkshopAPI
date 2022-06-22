@@ -6,7 +6,7 @@ let controller = {
         const workshop = req.body;
 
         pool.query(
-            "INSERT INTO Workshop (naam, beschrijving) VALUES (?,?);", [workshop.naam, workshop.beschrijving],
+            "INSERT INTO Workshop (workshopnaam, beschrijving) VALUES (?,?);", [workshop.naam, workshop.beschrijving],
             (dbError, result) => {
                 if (dbError) {
                     logger.debug(dbError.message);
@@ -58,7 +58,7 @@ let controller = {
         const workshopID = req.params.id;
 
         pool.query(
-            "UPDATE Workshop SET naam=?, startTijd=?, eindTijd=?, beschrijving=? WHERE workshopID =?;", [
+            "UPDATE Workshop SET workshopnaam=?, startTijd=?, eindTijd=?, beschrijving=? WHERE workshopID =?;", [
                 workshop.naam,
                 workshop.startTijd,
                 workshop.eindTijd,

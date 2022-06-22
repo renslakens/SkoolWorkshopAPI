@@ -14,8 +14,12 @@ let controller = {
             .replace("T", " ")
             .slice(0, 19);
 
+        let valuesJob = [
+            [job.aantalDocenten, startTijd, eindTijd, job.locatieID, job.workshopID, job.klantID, job.doelgroepID]
+        ];
+
         pool.query(
-            "INSERT INTO Opdracht (aantalDocenten, startTijd, eindTijd, locatieID, workshopID, klantID, doelgroepID) VALUES (?);", [job.aantalDocenten, startTijd, eindTijd, job.locatieID, job.workshopID, job.klantID, job.doelgroepID],
+            "INSERT INTO Opdracht (aantalDocenten, startTijd, eindTijd, locatieID, workshopID, klantID, doelgroepID) VALUES ?;", [valuesJob],
             function(error, result) {
                 if (error) {
                     logger.debug(error.sqlMessage);
@@ -96,7 +100,7 @@ let controller = {
     },
     getJobs: (req, res) => {
         let queryString =
-            "SELECT W.naam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
+            "SELECT W.workshopnaam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
         pool.query(queryString, function(error, results, fields) {
             if (error) {
                 res.status(400).json({

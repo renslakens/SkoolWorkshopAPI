@@ -80,7 +80,7 @@ CREATE TABLE Locatie (
 
 CREATE TABLE Workshop (
 	workshopID int NOT NULL AUTO_INCREMENT,
-	naam varchar(50),
+	workshopnaam varchar(50),
 	beschrijving varchar(250),
 	PRIMARY KEY (workshopID)
 );
@@ -93,13 +93,13 @@ CREATE TABLE Doelgroep (
 
 CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
-	aantalDocenten int,
-	startTijd datetime,
-	eindTijd datetime,
-	locatieID int,
-	workshopID int,
-	klantID int,
-	doelgroepID int,
+	aantalDocenten int NOT NULL,
+	startTijd datetime NOT NULL,
+	eindTijd datetime NOT NULL,
+	locatieID int NOT NULL,
+	workshopID int NOT NULL,
+	klantID int NOT NULL,
+	doelgroepID int NOT NULL,
 	PRIMARY KEY (opdrachtID),
 	FOREIGN KEY (locatieID) REFERENCES Locatie(locatieID),
 	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID),
