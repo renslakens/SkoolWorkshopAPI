@@ -23,13 +23,13 @@ let controller = {
                         status: 400,
                         message: "Oeps, er is iets fout gegaan " + error,
                     });
+                } else {
+                    res.status(201).json({
+                        status: 201,
+                        message: "Opdracht is toegevoegd",
+                    });
                 }
-                res.status(201).json({
-                    status: 201,
-                    message: "Opdracht is toegevoegd",
-                });
-            }
-        );
+            });
     },
     deleteJob: (req, res) => {
         const jobID = req.params.id;
