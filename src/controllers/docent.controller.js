@@ -111,7 +111,7 @@ let controller = {
     });
   },
   getDocent: (req, res) => {
-    const emailadres = req.body;
+    const emailadres = req.body.emailadres;
     pool.query(
       "SELECT * FROM docent WHERE loginEmail = ?;",
       [emailadres],
