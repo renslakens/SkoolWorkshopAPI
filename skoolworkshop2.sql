@@ -1,4 +1,4 @@
-USE skoolworkshop2;
+USE skool2dev;
 
 SET FOREIGN_KEY_CHECKS=0;
 
