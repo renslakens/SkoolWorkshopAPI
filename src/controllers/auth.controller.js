@@ -168,6 +168,7 @@ let controller = {
         "INSERT INTO Medewerker (voornaam, achternaam, loginEmail) VALUES ?";
       let sqlDocent =
         "INSERT INTO Docent (voornaam, achternaam, loginEmail, geslacht, geboortedatum, geboorteplaats, telefoonnummer, straat, huisnummer, postcode, woonplaats, land, heeftRijbewijs, heeftAuto) VALUES ?";
+      let sqlLoginDelete = "DELETE FROM login WHERE emailadres = ?";
       let valuesLogin = [[emailadres, hash, rol, 0]];
       let valuesMedewerker = [[voornaam, achternaam, emailadres]];
 
@@ -220,6 +221,7 @@ let controller = {
 
           pool.query(sqlDocent, [valuesDocent], (dbError, result) => {
             if (dbError) {
+              pool.query(sqlLoginDelete, [emailadres]);
               logger.debug(dbError.message);
               const error = {
                 status: 409,
