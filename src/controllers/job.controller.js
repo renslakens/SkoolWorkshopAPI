@@ -100,7 +100,7 @@ let controller = {
     },
     getJobs: (req, res) => {
         let queryString =
-            "SELECT W.workshopnaam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
+            "SELECT W.workshopnaam, W.beschrijving, O.aantalDocenten, O.startTijd, O.eindTijd, L.naam, L.land, L.postcode, L.straat, L.huisnummer, L.plaats, O.locatieID, O.workshopID, O.klantID, O.doelgroepID FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
         pool.query(queryString, function(error, results, fields) {
             if (error) {
                 res.status(400).json({
