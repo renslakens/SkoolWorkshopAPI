@@ -18,12 +18,15 @@ router.get("/", jobController.getJobs);
 router.get("/:id", jobController.getJob);
 
 //Teacher added to job
-router.post("/moderate", jobController.addTeacherToJob);
+router.post("/moderate/", jobController.addTeacherToJob);
+
+// //Apply to job
+// router.put("/apply/:emailadres", jobController.applyJob);
 
 //Accept job
-router.put("/moderate:id", jobController.acceptJob);
+router.put("/moderate/:emailadres", jobController.acceptJob);
 
 //Deny job
-router.delete("/moderate:id", jobController.deleteTeacherFromJob);
+router.delete("/moderate/:emailadres", jobController.deleteTeacherFromJob);
 
 module.exports = router;

@@ -123,11 +123,11 @@ CREATE TABLE DoelgroepDocent (
 
 CREATE TABLE DocentInOpdracht (
 	isBevestigd boolean DEFAULT FALSE,
-	docentID int,
+	loginEmail varchar(50),
 	opdrachtID int,
-	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
+	FOREIGN KEY (loginEmail) REFERENCES Docent(loginEmail),
 	FOREIGN KEY (opdrachtID) REFERENCES Opdracht(opdrachtID),
-	CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (docentID,OpdrachtID)
+	CONSTRAINT PK_DocentInOpdracht PRIMARY KEY (loginEmail,opdrachtID)
 );
 
 SET FOREIGN_KEY_CHECKS=1;

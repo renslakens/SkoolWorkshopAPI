@@ -100,7 +100,7 @@ let controller = {
     },
     getJobs: (req, res) => {
         let queryString =
-            "SELECT W.workshopnaam, W.beschrijving, O.aantalDocenten, O.startTijd, O.eindTijd, L.naam, L.land, L.postcode, L.straat, L.huisnummer, L.plaats, O.locatieID, O.workshopID, O.klantID, O.doelgroepID FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
+            "SELECT O.opdrachtID, W.workshopnaam, W.beschrijving, O.aantalDocenten, O.startTijd, O.eindTijd, L.naam, L.land, L.postcode, L.straat, L.huisnummer, L.plaats, O.locatieID, O.workshopID, O.klantID, O.doelgroepID FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten );";
         pool.query(queryString, function(error, results, fields) {
             if (error) {
                 res.status(400).json({
@@ -117,9 +117,9 @@ let controller = {
         });
     },
     acceptJob: (req, res) => {
-        let docentID = req.params.id;
+        let emailadres = req.params.emailadres;
         pool.query(
-            "UPDATE DocentInOpdracht SET isBevestigd = ? WHERE docentID = ?", [1, docentID],
+            "UPDATE DocentInOpdracht SET isBevestigd = ? WHERE loginEmail = ?", [1, emailadres],
             function(error, result) {
                 if (error) throw error;
 
@@ -137,11 +137,33 @@ let controller = {
             }
         );
     },
+    // applyJob: (req, res) => {
+    //     let emailadres = req.params.emailadres;
+    //     logger.debug(`User with emailadres ${emailadres} requested to be applied to a job`);
+    //     pool.query(
+    //         "UPDATE DocentInOpdracht SET isBevestigd = ? WHERE loginEmail = ?", [0, emailadres],
+    //         function(error, result) {
+    //             if (error) throw error;
+
+    //             if (result.affectedRows > 0) {
+    //                 res.status(200).json({
+    //                     status: 200,
+    //                     message: `Docent is toegewezen aan de workshop`,
+    //                 });
+    //             } else {
+    //                 res.status(400).json({
+    //                     status: 400,
+    //                     message: `Docent bestaat niet`,
+    //                 });
+    //             }
+    //         }
+    //     );
+    // },
     addTeacherToJob: (req, res) => {
-        const docentOpdracht = req.body;
+        const teacherJob = req.body;
 
         pool.query(
-            "INSERT INTO DocentInOpdracht (docentID, opdrachtID) VALUES (?,?);", [docentOpdracht.docentID, docentOpdracht.opdrachtID],
+            "INSERT INTO DocentInOpdracht (loginEmail, opdrachtID) VALUES (?,?);", [teacherJob.emailadres, teacherJob.id],
             function(error, result) {
                 if (error) throw error;
 
