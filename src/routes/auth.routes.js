@@ -10,9 +10,9 @@ router.delete("/:emailadres", authController.deleteUser);
 
 // Put route for accepting a new user
 router.put(
-    "/:emailadres",
-    //aunthController.validateEmployeeToken,
-    authController.acceptUser
+  "/:emailadres",
+  //aunthController.validateEmployeeToken,
+  authController.acceptUser
 );
 
 router.get("/", authController.getAllUsers);

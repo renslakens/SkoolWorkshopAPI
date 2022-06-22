@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecretKey = require("../config/config").jwtSecretKey;
 const bcrypt = require("bcrypt");
 const { rollback } = require("../../dbconnection");
+const { count } = require("console");
 const saltRounds = 10;
 
 let controller = {
@@ -76,36 +77,6 @@ let controller = {
       next(error);
     }
   },
-  addUser: (req, res, next) => {
-    const user = req.body;
-    emailadres = req.body.emailadres;
-    wachtwoord = req.body.wachtwoord;
-    rol = req.body.rol;
-
-    bcrypt.hash(wachtwoord, saltRounds, function (err, hash) {
-      let sql = "INSERT INTO login (emailadres, wachtwoord, rol) VALUES ?";
-      let values = [[emailadres, hash, rol]];
-
-      pool.query(sql, [values], (dbError, result) => {
-        if (dbError) {
-          logger.debug(dbError.message);
-          const error = {
-            status: 409,
-            message: "User has not been added",
-            result: "User is niet toegevoegd in database",
-          };
-          next(error);
-        } else {
-          logger.debug("InsertId is: ", result.insertId);
-          res.status(201).json({
-            status: 201,
-            message: "User is toegevoegd in database",
-            result: { id: result.insertId, ...user },
-          });
-        }
-      });
-    });
-  },
   getAllUsers: (req, res, next) => {
     const { naam, isAccepted } = req.query;
     logger.debug(`name = ${naam} isAccepted = ${isAccepted}`);
@@ -140,10 +111,10 @@ let controller = {
     });
   },
   getDocent: (req, res) => {
-    const docentID = req.params.id;
+    const emailadres = req.params.emailadres;
     pool.query(
-      "SELECT * FROM docent WHERE docentID = ?;",
-      [docentID],
+      "SELECT * FROM docent WHERE loginEmail = ?;",
+      [emailadres],
       function (error, result) {
         if (error) {
           res.status(400).json({
@@ -153,19 +124,20 @@ let controller = {
         }
         res.status(200).json({
           status: 200,
-          result: { ...result },
+          result: result ,
           message: "De docent is opgehaald",
         });
       }
     );
   },
+
   acceptUser: (req, res, next) => {
     const docentID = req.params.id;
     let user;
     logger.debug(`User with ID ${docentID} requested to be updated`);
 
     pool.query(
-      "UPDATE docent SET isAccepted = ? WHERE docentID = ?;",
+      "UPDATE login SET isAccepted = ? WHERE emailadres = ?;",
       [1, docentID],
       function (error, results, fields) {
         if (error) throw error;
@@ -184,13 +156,26 @@ let controller = {
       }
     );
   },
-  updateUser: (req, res, next) => {
+  updateDocent: (req, res, next) => {
     const docentID = req.params.id;
     const updateUser = req.body;
-    logger.debug(`User with ID ${docentID} requested to be updated`);
+    const docentIDint = parseInt(docentID);
+
+    let valuesDoelgroep = req.body.doelgroep;
+    let valuesWorkshop = req.body.workshop;
+    let valuesDoelgroepString = valuesDoelgroep;
+    let sqlDoelgroep =
+      "INSERT INTO doelgroepdocent (docentID, doelgroepID) VALUES (?, ?)";
+    let sqlWorkshop =
+      "INSERT INTO workshopdocent (docentID, workshopID) VALUES (?, ?)";
+    let sqlDoelgroepDelete = "DELETE FROM doelgroepdocent WHERE docentID = ?;";
+    let sqlWorkshopDelete = "DELETE FROM workshopdocent WHERE docentID = ?;";
+    logger.debug(
+      `User with ID ${docentID} requested to be updated ${valuesDoelgroep}${valuesWorkshop}`
+    );
 
     pool.query(
-      "Update docent SET naam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, salaris = ? WHERE docentID = ?;",
+      "Update docent SET voornaam = ?, achternaam = ?, geboortedatum = ?, geboorteplaats = ?, maxRijafstand = ?, heeftRijbewijs = ?, heeftAuto = ?, straat = ?, huisnummer = ?, geslacht = ?, nationaliteit = ?, woonplaats = ?, postcode = ?, land = ?, loginEmail = ?, telefoonnummer = ? WHERE docentID = ?;",
       [
         updateUser.naam,
         updateUser.achternaam,
@@ -206,7 +191,8 @@ let controller = {
         updateUser.woonplaats,
         updateUser.postcode,
         updateUser.land,
-        updateUser.salaris,
+        updateUser.emailadres,
+        updateUser.telefoonnummer,
         docentID,
       ],
       function (error, results, fields) {
@@ -216,18 +202,46 @@ let controller = {
             message: `Update failed, provided email already taken`,
           });
           return;
-        }
-        if (results.affectedRows > 0) {
-          connection.query(
-            "SELECT * FROM docent WHERE id = ?;",
-            [docentID],
-            function (error, results, fields) {
-              res.status(200).json({
-                status: 200,
-                result: results[0],
-              });
-            }
-          );
+        } else if (results.affectedRows > 0) {
+          pool.query(sqlDoelgroepDelete, [docentIDint]);
+          countd = 0;
+          valuesDoelgroep.forEach((element) => {
+            let doelgroep = valuesDoelgroep[countd];
+
+            pool.query(sqlDoelgroep, [docentIDint, doelgroep]), countd++;
+            (dbError, result) => {
+              if (dbError) {
+                logger.debug(dbError.message);
+                const error = {
+                  status: 409,
+                  message: "Update failed, target audience preference error",
+                };
+                next(error);
+              }
+            };
+          });
+          pool.query(sqlWorkshopDelete, [docentIDint]);
+          countw = 0;
+          valuesWorkshop.forEach((element) => {
+            let workshop = valuesWorkshop[countw];
+
+            pool.query(sqlWorkshop, [docentIDint, workshop]), countw++;
+            (dbError, result) => {
+              if (dbError) {
+                logger.debug(dbError.message);
+                const error = {
+                  status: 409,
+                  message: "Update failed, workshop preference error",
+                };
+                next(error);
+              }
+            };
+          });
+
+          res.status(201).json({
+            status: 201,
+            message: "Voorkeuren zijn toegevoegd aan de database",
+          });
         } else {
           res.status(400).json({
             status: 400,

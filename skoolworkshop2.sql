@@ -5,6 +5,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS Medewerker;
 DROP TABLE IF EXISTS DocentInOpdracht;
 DROP TABLE IF EXISTS WorkshopDocent;
+DROP TABLE IF EXISTS DoelgroepDocent;
 DROP TABLE IF EXISTS Docent;
 DROP TABLE IF EXISTS Opdracht;
 DROP TABLE IF EXISTS Klant;
@@ -14,6 +15,7 @@ DROP TABLE IF EXISTS Workshop;
 DROP TABLE IF EXISTS Login;
 
 CREATE TABLE Login (
+	voornaam varchar(25) NOT NULL,
 	emailadres varchar(50) NOT NULL,
 	wachtwoord varchar(60) NOT NULL,
 	rol varchar(10) NOT NULL DEFAULT "Docent",
@@ -23,31 +25,27 @@ CREATE TABLE Login (
 
 CREATE TABLE Docent (
 	docentID int NOT NULL AUTO_INCREMENT,
-	naam varchar(25) NOT NULL,
+	voornaam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
+	loginEmail varchar(50) NOT NULL,
+	geslacht varchar(5) NOT NULL,
 	geboortedatum date NOT NULL,
 	geboorteplaats varchar(25) NOT NULL,
-	maxRijafstand int,
-	heeftRijbewijs boolean,
-	heeftAuto boolean,
+	telefoonnummer varchar(10) NOT NULL,
 	straat varchar(25) NOT NULL,
 	huisnummer int NOT NULL,
-	geslacht varchar(5) NOT NULL,
-	nationaliteit varchar(15) NOT NULL,
-	woonplaats varchar(15) NOT NULL,
 	postcode varchar(8) NOT NULL,
+	woonplaats varchar(15) NOT NULL,
 	land varchar(25) NOT NULL,
-	isFlexwerker boolean,
-	loginEmail varchar(50) NOT NULL,
-	doelgroep varchar(15) NOT NULL,
-	telefoonnummer varchar(10) NOT NULL,
+	heeftRijbewijs boolean,
+	heeftAuto boolean,
 	PRIMARY KEY (docentID),
 	FOREIGN KEY (loginEmail) REFERENCES Login(emailadres) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Medewerker (
 	medewerkerID int NOT NULL AUTO_INCREMENT,
-	naam varchar(25) NOT NULL,
+	voornaam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
 	loginEmail varchar(50) NOT NULL,
 	PRIMARY KEY (medewerkerID),
@@ -56,7 +54,7 @@ CREATE TABLE Medewerker (
 
 CREATE TABLE Klant (
 	klantID int NOT NULL AUTO_INCREMENT,
-	naam varchar(25) NOT NULL,
+	voornaam varchar(25) NOT NULL,
 	achternaam varchar(25) NOT NULL,
 	postcode varchar(8) NOT NULL,
 	telefoonnummer varchar(10) NOT NULL,
@@ -65,7 +63,7 @@ CREATE TABLE Klant (
 	plaats varchar(25) NOT NULL,
 	klantType varchar(25),
 	land varchar(25) NOT NULL,
-	naamContactpersoon varchar(50) NOT NULL,
+	emailContactpersoon varchar(50) NOT NULL,
 	PRIMARY KEY (klantID)
 );
 
@@ -82,7 +80,7 @@ CREATE TABLE Locatie (
 
 CREATE TABLE Workshop (
 	workshopID int NOT NULL AUTO_INCREMENT,
-	naam varchar(50),
+	workshopnaam varchar(50),
 	beschrijving varchar(250),
 	PRIMARY KEY (workshopID)
 );
@@ -95,14 +93,13 @@ CREATE TABLE Doelgroep (
 
 CREATE TABLE Opdracht (
 	opdrachtID int NOT NULL AUTO_INCREMENT,
-	aantalDocenten int,
-	salarisIndicatie int,
-	startTijd datetime,
-	eindTijd datetime,
-	locatieID int,
-	workshopID int,
-	klantID int,
-	doelgroepID int,
+	aantalDocenten int NOT NULL,
+	startTijd datetime NOT NULL,
+	eindTijd datetime NOT NULL,
+	locatieID int NOT NULL,
+	workshopID int NOT NULL,
+	klantID int NOT NULL,
+	doelgroepID int NOT NULL,
 	PRIMARY KEY (opdrachtID),
 	FOREIGN KEY (locatieID) REFERENCES Locatie(locatieID),
 	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID),
@@ -115,6 +112,13 @@ CREATE TABLE WorkshopDocent (
 	workshopID int,
 	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
 	FOREIGN KEY (workshopID) REFERENCES Workshop(workshopID)
+);
+
+CREATE TABLE DoelgroepDocent (
+	docentID int,
+	doelgroepID int,
+	FOREIGN KEY (docentID) REFERENCES Docent(docentID),
+	FOREIGN KEY (doelgroepID) REFERENCES doelgroep(doelgroepID)
 );
 
 CREATE TABLE DocentInOpdracht (
