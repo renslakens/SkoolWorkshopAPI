@@ -12,7 +12,7 @@ router.delete("/:id", jobController.deleteJob);
 router.put("/:id", jobController.updateJob);
 
 //Get all open jobs
-router.get("/", jobController.getJobs);
+router.get("/:emailadres", jobController.getJobs);
 
 //Get one job
 router.get("/:id", jobController.getJob);
