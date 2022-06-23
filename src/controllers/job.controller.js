@@ -126,11 +126,6 @@ let controller = {
           status: 200,
           result: results,
         });
-      } else {
-        res.status(200).json({
-          status: 200,
-          message: "geen open opdrachten",
-        });
       }
     });
   },
@@ -156,28 +151,41 @@ let controller = {
       }
     );
   },
-  // applyJob: (req, res) => {
-  //     let emailadres = req.params.emailadres;
-  //     logger.debug(`User with emailadres ${emailadres} requested to be applied to a job`);
-  //     pool.query(
-  //         "UPDATE DocentInOpdracht SET isBevestigd = ? WHERE loginEmail = ?", [0, emailadres],
-  //         function(error, result) {
-  //             if (error) throw error;
 
-  //             if (result.affectedRows > 0) {
-  //                 res.status(200).json({
-  //                     status: 200,
-  //                     message: `Docent is toegewezen aan de workshop`,
-  //                 });
-  //             } else {
-  //                 res.status(400).json({
-  //                     status: 400,
-  //                     message: `Docent bestaat niet`,
-  //                 });
-  //             }
-  //         }
-  //     );
-  // },
+  getWorkshops: (req, res, next) => {
+    const { loginEmail, isBevestigd } = req.query;
+    logger.debug(`loginEmail = ${loginEmail} isBevestigd = ${isBevestigd}`);
+
+    let queryString = "SELECT * FROM `DocentInOpdracht`";
+
+    if (loginEmail || isBevestigd) {
+      queryString += " WHERE ";
+      if (loginEmail) {
+        queryString += `loginEmail = '${loginEmail}'`;
+      }
+      if (loginEmail && isBevestigd) {
+        queryString += " AND ";
+      }
+      if (isBevestigd) {
+        queryString += `isBevestigd='${isBevestigd}'`;
+      }
+    }
+    logger.debug(queryString);
+
+    pool.query(queryString, function (error, results, fields) {
+      // Handle error after the release.
+      if (error) {
+        next(error);
+      }
+
+      // logger.debug("#results =", results.length);
+      res.status(200).json({
+        status: 200,
+        result: results,
+      });
+    });
+  },
+
   addTeacherToJob: (req, res) => {
     const teacherJob = req.body;
 
@@ -226,6 +234,7 @@ let controller = {
   },
   getJob: (req, res) => {
     const jobID = req.params.id;
+    logger.debug(`Job with ID ${jobID} is requested`);
     let queryString =
       "SELECT W.naam, O.startTijd, O.eindTijd, L.naam FROM workshop W, Opdracht O, locatie L WHERE opdrachtID =?";
     pool.query(queryString, [jobID], function (error, results, fields) {
