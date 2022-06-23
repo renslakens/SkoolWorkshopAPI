@@ -5,6 +5,9 @@ const jobController = require('../controllers/job.controller')
 //Add job
 router.post('/', jobController.addJob)
 
+//Accept job
+router.put('/moderate/', jobController.acceptJob)
+
 //Delete job
 router.delete('/:id', jobController.deleteJob)
 
@@ -25,9 +28,6 @@ router.post('/moderate/', jobController.addTeacherToJob)
 
 // //Apply to job
 // router.put("/apply/:emailadres", jobController.applyJob);
-
-//Accept job
-router.put('/moderate/:emailadres', jobController.acceptJob)
 
 //Deny job
 router.delete('/moderate/:emailadres', jobController.deleteTeacherFromJob)
