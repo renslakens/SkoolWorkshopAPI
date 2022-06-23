@@ -118,8 +118,14 @@ let controller = {
     let queryjobviewdrop = "DROP VIEW IF EXISTS jobslist;";
     let queryString =
       "SELECT * FROM jobslist WHERE opdrachtID != ANY(SELECT opdrachtID FROM docentinopdracht WHERE loginEmail = ?);";
-    pool.query(queryjobviewdrop);
-    pool.query(queryjobview);
+    function deleteview() {
+      pool.query(queryjobviewdrop);
+    }
+    deleteview;
+    function createview() {
+      pool.query(queryjobview);
+    }
+    createview;
     pool.query(queryString, [loginEmail], function (error, results, fields) {
       if (error) {
         res.status(400).json({
@@ -138,7 +144,7 @@ let controller = {
           message: "Geen openstaande opdrachten",
         });
       }
-      pool.query(queryjobviewdrop);
+      deleteview;
     });
   },
   acceptJob: (req, res, next) => {
