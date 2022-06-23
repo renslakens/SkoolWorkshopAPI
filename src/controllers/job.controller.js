@@ -108,43 +108,42 @@ let controller = {
             }
         );
     },
-    getJobs: (req, res, next) => {
+    getJobs: (req, res) => {
         const loginEmail = req.params.emailadres;
         let queryjobview =
             "CREATE VIEW jobslist AS SELECT O.opdrachtID, W.workshopnaam, W.beschrijving, O.aantalDocenten, O.startTijd, O.eindTijd, L.naam, L.land, L.postcode, L.straat, L.huisnummer, L.plaats, O.locatieID, O.workshopID, O.klantID, O.doelgroepID FROM workshop W, Opdracht O, locatie L WHERE O.workshopID IN (SELECT O.workshopID FROM docentinopdracht DIO WHERE DIO.opdrachtID = O.opdrachtID AND DIO.isBevestigd = TRUE HAVING COUNT(DIO.opdrachtID) < O.aantalDocenten);";
         let queryjobviewdrop = "DROP VIEW IF EXISTS jobslist;";
         let queryString =
             "SELECT * FROM jobslist WHERE opdrachtID != ANY(SELECT opdrachtID FROM docentinopdracht WHERE loginEmail = ?);";
-        pool.query(queryjobview);
-        pool.query(queryString, [loginEmail], function(error, results, fields) {
-            // if (error) {
-            //     res.status(400).json({
-            //         status: 400,
-            //         message: error,
-            //     });
-            // }
-            // if (results.length > 0) {
-            //     res.status(200).json({
-            //         status: 200,
-            //         result: results,
-            //     });
-            // } else {
-            //     res.status(200).json({
-            //         status: 200,
-            //         message: "Geen openstaande opdrachten",
-            //     });
-            // }
 
-            if (error) {
-                next(error);
-            }
-
-            // logger.debug("#results =", results.length);
-            res.status(200).json({
-                status: 200,
-                result: results,
-            });
+        function deleteview() {
             pool.query(queryjobviewdrop);
+        }
+        deleteview;
+
+        function createview() {
+            pool.query(queryjobview);
+        }
+        createview;
+        pool.query(queryString, [loginEmail], function(error, results, fields) {
+            if (error) {
+                res.status(400).json({
+                    status: 400,
+                    message: error,
+                });
+            }
+            if (results.length > 0) {
+                res.status(200).json({
+                    status: 200,
+                    result: results,
+                });
+            } else {
+                res.status(200).json({
+                    status: 200,
+                    message: "Geen openstaande opdrachten",
+                });
+            }
+            deleteview;
         });
     },
     acceptJob: (req, res, next) => {
