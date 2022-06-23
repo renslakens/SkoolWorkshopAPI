@@ -1,35 +1,38 @@
-const express = require('express')
-const router = express.Router()
-const jobController = require('../controllers/job.controller')
+const express = require("express");
+const router = express.Router();
+const jobController = require("../controllers/job.controller");
 
 //Add job
-router.post('/', jobController.addJob)
+router.post("/", jobController.addJob);
 
 //Accept job
 router.put('/moderate/', jobController.acceptJob)
 
 //Delete job
-router.delete('/:id', jobController.deleteJob)
+router.delete("/:id", jobController.deleteJob);
 
 //Update job
-router.put('/:id', jobController.updateJob)
+router.put("/:id", jobController.updateJob);
 
 //Get all open jobs
-router.get('/', jobController.getJobs)
+router.get("/:emailadres", jobController.getJobs);
 
 //Get workshops
-router.get('/workshops/', jobController.getWorkshops)
+router.get("/workshops/", jobController.getWorkshops);
 
 //Get one job
-router.get('/:id', jobController.getJob)
+router.get("/:id", jobController.getJob);
 
 //Teacher added to job
-router.post('/moderate/', jobController.addTeacherToJob)
+router.post("/moderate/", jobController.addTeacherToJob);
 
 // //Apply to job
 // router.put("/apply/:emailadres", jobController.applyJob);
 
-//Deny job
-router.delete('/moderate/:emailadres', jobController.deleteTeacherFromJob)
+//Accept job
+router.put("/moderate/:emailadres", jobController.acceptJob);
 
-module.exports = router
+//Deny job
+router.delete("/moderate/:emailadres", jobController.deleteTeacherFromJob);
+
+module.exports = router;
