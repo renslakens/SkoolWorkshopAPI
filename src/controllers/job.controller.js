@@ -127,6 +127,11 @@ let controller = {
           status: 200,
           result: results,
         });
+      } else {
+        res.status(200).json({
+          status: 200,
+          message: "Geen openstaande opdrachten",
+        });
       }
     });
   },
